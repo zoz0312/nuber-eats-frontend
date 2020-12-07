@@ -1,16 +1,45 @@
+import { gql, useMutation } from '@apollo/client';
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import FormError from '../components/FormError';
+import { loginMutation, loginMutationVariables } from '../__generated__/loginMutation';
+
+
+const LOGIN_MUTATION = gql`
+  mutation loginMutation($email: String!, $password: String!) {
+    login(input: {
+      email: $email,
+      password: $password
+    }) {
+      ok
+      error
+      token
+    }
+  }
+`;
 
 interface ILoginForm {
-  email?: string;
-  password?: string;
+  email: string;
+  password: string;
 }
 
 const Login = () => {
   const { register, getValues, errors, handleSubmit } = useForm<ILoginForm>();
+  const [loginMutation] = useMutation<
+    loginMutation,
+    loginMutationVariables
+  >(LOGIN_MUTATION);
+
   const onSubmit = () => {
-    console.log(getValues());
+    const { email, password } = getValues();
+    loginMutation({
+      variables: {
+        email,
+        password,
+      }
+    })
   }
+
   return (
     <div className="h-screen flex items-center justify-center bg-gray-800">
       <div className="bg-white w-full max-w-lg py-5 rounded-lg text-center">
@@ -27,12 +56,12 @@ const Login = () => {
             className="input"
           />
           { errors.email?.message && (
-            <span className="font-bold text-red-500">{ errors.email?.message }</span>
+            <FormError errorMessage={errors.email?.message} />
           )}
           <input
             ref={register({
               required: 'Password is required',
-              minLength: 10,
+              minLength: 5,
             })}
             name="password"
             type="password"
@@ -40,10 +69,10 @@ const Login = () => {
             className="input"
           />
           { errors.password?.type === 'minLength' && (
-            <span className="font-bold text-red-500">비밀번호는 최소 10자 이상이어야 합니다.</span>
+            <FormError errorMessage={'비밀번호는 최소 10자 이상이어야 합니다.'} />
           )}
           { errors.password?.message && (
-            <span className="font-bold text-red-500">{ errors.password?.message }</span>
+            <FormError errorMessage={errors.password?.message} />
           )}
           <button className="btn-login">
             Login
