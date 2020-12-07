@@ -1,4 +1,4 @@
-import { gql, useMutation } from '@apollo/client';
+import { ApolloError, gql, useMutation } from '@apollo/client';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import FormError from '../components/FormError';
@@ -24,13 +24,37 @@ interface ILoginForm {
 }
 
 const Login = () => {
-  const { register, getValues, errors, handleSubmit } = useForm<ILoginForm>();
-  const [loginMutation] = useMutation<
+  const {
+    register,
+    getValues,
+    watch,
+    errors,
+    handleSubmit
+  } = useForm<ILoginForm>();
+
+  const onCompleted = (data: loginMutation) => {
+    const { login: { ok, error, token } } = data;
+    if (ok) {
+      console.log(token)
+    }
+    //  else {
+    //   if (error) {
+    //     console.log('error', error);
+    //   }
+    // }
+  }
+
+  const [loginMutation, { data: loginMutationResult, loading }] = useMutation<
     loginMutation,
     loginMutationVariables
-  >(LOGIN_MUTATION);
+  >(LOGIN_MUTATION, {
+    onCompleted,
+  });
 
   const onSubmit = () => {
+    if (loading) {
+      return;
+    }
     const { email, password } = getValues();
     loginMutation({
       variables: {
@@ -75,8 +99,11 @@ const Login = () => {
             <FormError errorMessage={errors.password?.message} />
           )}
           <button className="btn-login">
-            Login
+            { loading ? 'Loadding...' : 'Login' }
           </button>
+          { loginMutationResult?.login.error && (
+            <FormError errorMessage={loginMutationResult?.login.error} />
+          )}
         </form>
       </div>
     </div>
