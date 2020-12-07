@@ -1,6 +1,8 @@
 import { ApolloError, gql, useMutation } from '@apollo/client';
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { Link } from 'react-router-dom';
+import Button from '../components/Button';
 import FormError from '../components/FormError';
 import { loginMutation, loginMutationVariables } from '../__generated__/loginMutation';
 
@@ -29,8 +31,12 @@ const Login = () => {
     getValues,
     watch,
     errors,
-    handleSubmit
-  } = useForm<ILoginForm>();
+    handleSubmit,
+    formState,
+  } = useForm<ILoginForm>({
+    mode: 'onChange'
+  });
+  console.log('formState.isValid', formState.isValid)
 
   const onCompleted = (data: loginMutation) => {
     const { login: { ok, error, token } } = data;
@@ -65,12 +71,13 @@ const Login = () => {
   }
 
   return (
-    <div className="h-screen flex items-center justify-center bg-gray-800">
-      <div className="bg-white w-full max-w-lg py-5 rounded-lg text-center">
-        <h3 className="text-3xl text-gray-800">Login</h3>
+    <div className="h-screen flex items-center flex-col">
+      <div className="w-full mt-10 lg:mt-32 max-w-screen-sm flex flex-col items-center">
+        <img src='' className="w-60 h-16 mb-3" />
+        <h4 className="w-full font-semibold text-left pl-5 text-2xl mb-6">Welcome back</h4>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="grid gap-5 mt-5 px-5"
+          className="grid gap-5 my-5 px-5 w-full"
         >
           <input
             ref={register({ required: 'Email is required' })}
@@ -98,13 +105,18 @@ const Login = () => {
           { errors.password?.message && (
             <FormError errorMessage={errors.password?.message} />
           )}
-          <button className="btn-login">
-            { loading ? 'Loadding...' : 'Login' }
-          </button>
+          <Button
+            canClick={formState.isValid}
+            loading={loading}
+            actionText={'Login'}
+          />
           { loginMutationResult?.login.error && (
             <FormError errorMessage={loginMutationResult?.login.error} />
           )}
         </form>
+        <div>
+          New to Nuber? <Link to='/create-account' className="text-lime-600 hover:underline">Create Account</Link>
+        </div>
       </div>
     </div>
   )
