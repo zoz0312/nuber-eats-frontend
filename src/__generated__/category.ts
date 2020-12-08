@@ -9,17 +9,17 @@ import { CategoryInput } from "./globalTypes";
 // GraphQL query operation: category
 // ====================================================
 
-export interface category_category_restaurants_category {
+export interface category_category_category_restaurants_category {
   __typename: "Category";
   name: string;
 }
 
-export interface category_category_restaurants {
+export interface category_category_category_restaurants {
   __typename: "Restaurant";
   id: number;
   name: string;
   coverImage: string;
-  category: category_category_restaurants_category | null;
+  category: category_category_category_restaurants_category | null;
   address: string;
   isPromoted: boolean;
 }
@@ -31,6 +31,7 @@ export interface category_category_category {
   coverImage: string | null;
   slug: string;
   restaurantCount: number;
+  restaurants: category_category_category_restaurants[];
 }
 
 export interface category_category {
@@ -39,7 +40,6 @@ export interface category_category {
   error: string | null;
   totalPages: number | null;
   totalResults: number | null;
-  restaurants: category_category_restaurants | null;
   category: category_category_category | null;
 }
 

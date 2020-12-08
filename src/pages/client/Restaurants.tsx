@@ -63,7 +63,7 @@ const ClientRestaurants: React.FC = () => {
   }
 
   return (
-    <div>
+    <section>
       <Helmet>
         <title>Home | Nuber Eats</title>
       </Helmet>
@@ -127,7 +127,7 @@ const ClientRestaurants: React.FC = () => {
           </div>
         )}
       </div>
-    </div>
+    </section>
   )
 }
 
