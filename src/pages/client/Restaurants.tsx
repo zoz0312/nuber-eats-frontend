@@ -37,7 +37,7 @@ interface IFormProps {
   searchTerm: string;
 }
 
-const Restaurants: React.FC = () => {
+const ClientRestaurants: React.FC = () => {
   const [page, setPage] = useState(1);
   const { data, loading, error } = useQuery<
     restaurantsPageQuery,
@@ -98,6 +98,7 @@ const Restaurants: React.FC = () => {
               {data?.restaurants.results?.map((restaurant, index) => (
                 <Restaurant
                   key={index}
+                  id={restaurant.id}
                   coverImage={restaurant.coverImage}
                   name={restaurant.name}
                   categoryName={restaurant.category?.name}
@@ -130,4 +131,4 @@ const Restaurants: React.FC = () => {
   )
 }
 
-export default Restaurants;
+export default ClientRestaurants;

@@ -27,7 +27,7 @@ interface ICategoryParams {
   slug: string;
 };
 
-const Category: React.FC = () => {
+const ClientCategory: React.FC = () => {
   const params = useParams<ICategoryParams>();
   const { data, loading } = useQuery<
     category,
@@ -48,4 +48,4 @@ const Category: React.FC = () => {
   );
 }
 
-export default Category;
+export default ClientCategory;

@@ -20,7 +20,7 @@ const SEARCH_RESTAURANT = gql`
   ${RESTUARANT_FRAGMENT}
 `;
 
-const Search: React.FC = () => {
+const ClientSearch: React.FC = () => {
   const location = useLocation();
   const history = useHistory();
   const [startQuery, { loading, data }] = useLazyQuery<
@@ -52,4 +52,4 @@ const Search: React.FC = () => {
   );
 }
 
-export default Search;
+export default ClientSearch;
