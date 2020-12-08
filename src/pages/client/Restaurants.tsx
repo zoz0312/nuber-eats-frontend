@@ -34,6 +34,8 @@ const RESTAURANTS_QUERY = gql`
   }
 `;
 
+const defaultImageURL = 'https://www.nicepng.com/png/full/131-1314271_food-icon-food-court-icon-png.png';
+
 const Restaurants: React.FC = () => {
   const { data, loading, error } = useQuery<
     restaurantsPageQuery,
@@ -49,7 +51,32 @@ const Restaurants: React.FC = () => {
   console.log('data', data);
 
   return (
-    <div>레스또랑</div>
+    <div>
+      <form className="bg-gray-800 w-full py-40 flex items-center justify-center">
+        <input
+          type="Search"
+          className="input w-3/12 rounded-md border-0"
+          placeholder="Search restaurats..." />
+      </form>
+      <div>
+        {!loading && (
+          <div className="max-x-screen-2xl mx-auto mt-8">
+            <div className="flex justify-around max-w-xs mx-auto">
+            {data?.allcategories.categories?.map((category, index) => (
+              <div className="w-14 flex flex-col items-center">
+                <div
+                  key={index}
+                  style={{backgroundImage: `url(${category.coverImage ? category.coverImage : defaultImageURL})`}}
+                  className="w-14 h-14 rounded-full bg-cover hover:bg-gray-100 cursor-pointer">
+                </div>
+                <span className="mt-1 text-sm text-center font-bold break-all">{ category.name }</span>
+              </div>
+            ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
   )
 }
 
