@@ -42,7 +42,7 @@ const CreateAccount = () => {
     const { createAccount: { ok } } = data;
     if (ok) {
       alert('아이디가 생성되었습니다!\n로그인 해주세요!')
-      history.push('/login');
+      history.push('/');
     }
   }
   const [createAccountMutation, {
@@ -129,7 +129,7 @@ const CreateAccount = () => {
         </form>
         <div>
           Already have an account?&nbsp;
-          <Link to='/login' className="text-lime-600 hover:underline">Login</Link>
+          <Link to='/' className="text-lime-600 hover:underline">Login</Link>
         </div>
       </div>
     </div>
