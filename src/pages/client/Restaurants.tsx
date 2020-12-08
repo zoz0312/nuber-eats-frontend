@@ -2,6 +2,10 @@ import { gql, useQuery } from '@apollo/client';
 import React, { useState } from 'react';
 import { restaurantsPageQuery, restaurantsPageQueryVariables } from '../../__generated__/restaurantsPageQuery';
 import Restaurant from '../../components/Restaurant';
+import { useForm } from 'react-hook-form';
+import { useHistory } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
+import { RESTUARANT_FRAGMENT } from '../../fragments';
 
 const RESTAURANTS_QUERY = gql`
   query restaurantsPageQuery($input: RestaurantsInput!) {
@@ -22,21 +26,19 @@ const RESTAURANTS_QUERY = gql`
       totalPages
       totalResults
       results {
-        id
-        name
-        coverImage
-        category {
-          name
-        }
-        address
-        isPromoted
+        ...RestaurantParts
       }
     }
   }
+  ${RESTUARANT_FRAGMENT}
 `;
 
 const defaultCategoryImage = 'https://www.nicepng.com/png/full/131-1314271_food-icon-food-court-icon-png.png';
 const defaultRestaurantImage = 'https://www.bbq.co.kr/images/common/logo_header_bbq.png';
+
+interface IFormProps {
+  searchTerm: string;
+}
 
 const Restaurants: React.FC = () => {
   const [page, setPage] = useState(1);
@@ -53,13 +55,30 @@ const Restaurants: React.FC = () => {
 
   const onNextPageClick = () => setPage(current => current + 1);
   const onPrevPageClick = () => setPage(current => current - 1);
+  const { register, handleSubmit, getValues } = useForm<IFormProps>();
+  const history = useHistory();
+  const onSearchSubmit = () => {
+    console.log('getValues()', getValues())
+    const { searchTerm } = getValues();
+    history.push({
+      pathname: '/search',
+      search: `?term=${searchTerm}`,
+    })
+  }
 
   return (
     <div>
-      <form className="bg-gray-800 w-full py-40 flex items-center justify-center">
+      <Helmet>
+        <title>Home | Nuber Eats</title>
+      </Helmet>
+      <form
+        onSubmit={handleSubmit(onSearchSubmit)}
+        className="bg-gray-800 w-full py-40 flex items-center justify-center">
         <input
+          ref={register({ required: true, min: 3 })}
           type="Search"
-          className="input w-3/12 rounded-md border-0"
+          name="searchTerm"
+          className="input w-3/4 md:w-3/12 rounded-md border-0"
           placeholder="Search restaurats..." />
       </form>
       <div>
@@ -67,9 +86,10 @@ const Restaurants: React.FC = () => {
           <div className="max-w-screen-2xl mx-auto mt-8 pb-20">
             <div className="flex justify-around max-w-sm mx-auto">
             {data?.allcategories.categories?.map((category, index) => (
-              <div className="w-16 flex flex-col items-center group">
+              <div
+                key={index}
+                className="w-16 flex flex-col items-center group">
                 <div
-                  key={index}
                   style={{backgroundImage: `url(${category.coverImage ? category.coverImage : defaultCategoryImage})`}}
                   className="w-16 h-16 rounded-full bg-cover group-hover:bg-gray-100 cursor-pointer">
                 </div>
@@ -77,7 +97,7 @@ const Restaurants: React.FC = () => {
               </div>
             ))}
             </div>
-            <div className="grid grid-cols-3 gap-x-5 gap-y-10 mt-10">
+            <div className="grid md:grid-cols-3 gap-x-5 gap-y-10 mt-10">
               {data?.restaurants.results?.map((restaurant, index) => (
                 <Restaurant
                   key={index}
