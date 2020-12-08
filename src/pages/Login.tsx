@@ -6,7 +6,7 @@ import { Helmet } from 'react-helmet-async';
 import Button from '../components/Button';
 import FormError from '../components/FormError';
 import { loginMutation, loginMutationVariables } from '../__generated__/loginMutation';
-import { authToken, isLoggedInVar } from '../apollo';
+import { authTokenVar, isLoggedInVar } from '../apollo';
 import { LOCALSTORAGE_TOKEN } from '../constants';
 
 
@@ -43,7 +43,7 @@ const Login = () => {
     const { login: { ok, token } } = data;
     if (ok && token) {
       localStorage.setItem(LOCALSTORAGE_TOKEN, token);
-      authToken(token);
+      authTokenVar(token);
       isLoggedInVar(true);
     }
   }
