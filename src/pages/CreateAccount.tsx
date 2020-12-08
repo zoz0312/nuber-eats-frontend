@@ -8,6 +8,7 @@ import FormError from '../components/FormError';
 import { UserRole } from '../__generated__/globalTypes';
 import { createAccountMutation, createAccountMutationVariables } from '../__generated__/createAccountMutation';
 import logo from '../images/logo.svg';
+import { EMAIL_PATTERN } from '../constants';
 
 const CREATE_ACCOUNT_MUTATION = gql`
   mutation createAccountMutation($createAccountInput: CreateAccountInput!) {
@@ -87,7 +88,7 @@ const CreateAccount = () => {
           <input
             ref={register({
               required: 'Email is required',
-              pattern: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+              pattern: EMAIL_PATTERN,
             })}
             name="email"
             type="email"

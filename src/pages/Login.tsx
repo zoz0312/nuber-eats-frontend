@@ -7,7 +7,7 @@ import Button from '../components/Button';
 import FormError from '../components/FormError';
 import { loginMutation, loginMutationVariables } from '../__generated__/loginMutation';
 import { authTokenVar, isLoggedInVar } from '../apollo';
-import { LOCALSTORAGE_TOKEN } from '../constants';
+import { EMAIL_PATTERN, LOCALSTORAGE_TOKEN } from '../constants';
 import logo from '../images/logo.svg';
 
 const LOGIN_MUTATION = gql`
@@ -83,7 +83,7 @@ const Login = () => {
           <input
             ref={register({
               required: 'Email is required',
-              pattern: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+              pattern: EMAIL_PATTERN,
             })}
             name="email"
             type="email"

@@ -6,10 +6,12 @@ import { Header } from '../components/Header';
 import { useMe } from '../hooks/useMe';
 import { NotFound } from '../pages/404';
 import ConfirmEmail from '../pages/user/ConfirmEmail';
+import EditProfile from '../pages/user/EditProfile';
 
 const ClientRoutes = [
   <Route key={1} path='/' exact component={Restaurants} />,
   <Route key={2} path='/confirm' exact component={ConfirmEmail} />,
+  <Route key={3} path='/edit-profile' exact component={EditProfile} />,
 ];
 
 const LoggedInRouter = () => {

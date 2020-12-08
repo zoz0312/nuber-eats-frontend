@@ -1,6 +1,6 @@
 import { gql, useApolloClient, useMutation } from '@apollo/client';
 import React, { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useMe } from '../../hooks/useMe';
 import { verifyEmail, verifyEmailVariables } from '../../__generated__/verifyEmail';
 
@@ -14,22 +14,26 @@ const VERIFY_EMAIL_MUTATION = gql`
 `;
 
 const ConfirmEmail: React.FC = () => {
-  const { data: userData } = useMe();
   const client = useApolloClient();
-  const onCompleted = (data: verifyEmail) => {
+  const { data: userData, refetch } = useMe();
+  const history = useHistory();
+
+  const onCompleted = async (data: verifyEmail) => {
     const { verifyEmail: { ok } } = data;
     if (ok && userData?.me.id) {
-      client.writeFragment({
-        id: `User:${userData.me.id}`,
-        fragment: gql`
-          fragment VerifyedUser on User {
-            verified
-          }
-        `,
-        data: {
-          verified: true
-        },
-      })
+      await refetch();
+      // client.writeFragment({
+      //   id: `User:${userData.me.id}`,
+      //   fragment: gql`
+      //     fragment VerifyedUser on User {
+      //       verified
+      //     }
+      //   `,
+      //   data: {
+      //     verified: true
+      //   },
+      // })
+      history.push('/')
     }
   };
 
@@ -48,7 +52,7 @@ const ConfirmEmail: React.FC = () => {
           code,
         }
       }
-    })
+    });
   }, []);
 
   return (
