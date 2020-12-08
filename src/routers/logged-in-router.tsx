@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Restaurants from '../pages/client/Restaurants';
 import { UserRole } from '../__generated__/globalTypes';
 import { Header } from '../components/Header';
