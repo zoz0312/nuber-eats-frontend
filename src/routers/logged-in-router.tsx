@@ -8,12 +8,15 @@ import { NotFound } from '../pages/404';
 import ConfirmEmail from '../pages/user/ConfirmEmail';
 import EditProfile from '../pages/user/EditProfile';
 import Search from '../pages/client/Search';
+import Category from '../pages/client/Category';
 
+let keyValue = 0;
 const ClientRoutes = [
-  <Route key={1} path='/' exact component={Restaurants} />,
-  <Route key={2} path='/confirm' exact component={ConfirmEmail} />,
-  <Route key={3} path='/edit-profile' exact component={EditProfile} />,
-  <Route key={4} path='/search' exact component={Search} />,
+  <Route key={keyValue++} path='/' exact component={Restaurants} />,
+  <Route key={keyValue++} path='/confirm' exact component={ConfirmEmail} />,
+  <Route key={keyValue++} path='/edit-profile' exact component={EditProfile} />,
+  <Route key={keyValue++} path='/search' exact component={Search} />,
+  <Route key={keyValue++} path='/category/:slug' exact component={Category} />,
 ];
 
 const LoggedInRouter = () => {

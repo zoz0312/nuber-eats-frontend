@@ -3,9 +3,9 @@ import React, { useState } from 'react';
 import { restaurantsPageQuery, restaurantsPageQueryVariables } from '../../__generated__/restaurantsPageQuery';
 import Restaurant from '../../components/Restaurant';
 import { useForm } from 'react-hook-form';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { RESTUARANT_FRAGMENT } from '../../fragments';
+import { CATEGORY_FRAGMENT, RESTUARANT_FRAGMENT } from '../../fragments';
 
 const RESTAURANTS_QUERY = gql`
   query restaurantsPageQuery($input: RestaurantsInput!) {
@@ -13,11 +13,7 @@ const RESTAURANTS_QUERY = gql`
       ok
       error
       categories {
-        id
-        name
-        coverImage
-        slug
-        restaurantCount
+        ...CategoryParts
       }
     }
     restaurants(input: $input) {
@@ -31,6 +27,7 @@ const RESTAURANTS_QUERY = gql`
     }
   }
   ${RESTUARANT_FRAGMENT}
+  ${CATEGORY_FRAGMENT}
 `;
 
 const defaultCategoryImage = 'https://www.nicepng.com/png/full/131-1314271_food-icon-food-court-icon-png.png';
@@ -58,7 +55,6 @@ const Restaurants: React.FC = () => {
   const { register, handleSubmit, getValues } = useForm<IFormProps>();
   const history = useHistory();
   const onSearchSubmit = () => {
-    console.log('getValues()', getValues())
     const { searchTerm } = getValues();
     history.push({
       pathname: '/search',
@@ -86,15 +82,16 @@ const Restaurants: React.FC = () => {
           <div className="max-w-screen-2xl mx-auto mt-8 pb-20">
             <div className="flex justify-around max-w-sm mx-auto">
             {data?.allcategories.categories?.map((category, index) => (
-              <div
-                key={index}
-                className="w-16 flex flex-col items-center group">
+              <Link key={index} to={`/category/${category.slug}`}>
                 <div
-                  style={{backgroundImage: `url(${category.coverImage ? category.coverImage : defaultCategoryImage})`}}
-                  className="w-16 h-16 rounded-full bg-cover group-hover:bg-gray-100 cursor-pointer">
+                  className="w-16 flex flex-col items-center group">
+                  <div
+                    style={{backgroundImage: `url(${category.coverImage ? category.coverImage : defaultCategoryImage})`}}
+                    className="w-16 h-16 rounded-full bg-cover group-hover:bg-gray-100 cursor-pointer">
+                  </div>
+                  <span className="mt-1 text-sm text-center font-bold break-all">{ category.name }</span>
                 </div>
-                <span className="mt-1 text-sm text-center font-bold break-all">{ category.name }</span>
-              </div>
+              </Link>
             ))}
             </div>
             <div className="grid md:grid-cols-3 gap-x-5 gap-y-10 mt-10">
