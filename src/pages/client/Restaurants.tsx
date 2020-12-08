@@ -1,6 +1,7 @@
 import { gql, useQuery } from '@apollo/client';
-import React from 'react';
+import React, { useState } from 'react';
 import { restaurantsPageQuery, restaurantsPageQueryVariables } from '../../__generated__/restaurantsPageQuery';
+import Restaurant from '../../components/Restaurant';
 
 const RESTAURANTS_QUERY = gql`
   query restaurantsPageQuery($input: RestaurantsInput!) {
@@ -38,18 +39,20 @@ const defaultCategoryImage = 'https://www.nicepng.com/png/full/131-1314271_food-
 const defaultRestaurantImage = 'https://www.bbq.co.kr/images/common/logo_header_bbq.png';
 
 const Restaurants: React.FC = () => {
+  const [page, setPage] = useState(1);
   const { data, loading, error } = useQuery<
     restaurantsPageQuery,
     restaurantsPageQueryVariables
   >(RESTAURANTS_QUERY, {
     variables: {
       input: {
-        page: 1,
+        page,
       }
     }
   });
 
-  console.log('data', data);
+  const onNextPageClick = () => setPage(current => current + 1);
+  const onPrevPageClick = () => setPage(current => current - 1);
 
   return (
     <div>
@@ -61,8 +64,8 @@ const Restaurants: React.FC = () => {
       </form>
       <div>
         {!loading && (
-          <div className="max-x-screen-2xl mx-auto mt-8">
-            <div className="flex justify-around max-w-xs mx-auto">
+          <div className="max-w-screen-2xl mx-auto mt-8 pb-20">
+            <div className="flex justify-around max-w-sm mx-auto">
             {data?.allcategories.categories?.map((category, index) => (
               <div className="w-16 flex flex-col items-center group">
                 <div
@@ -76,14 +79,32 @@ const Restaurants: React.FC = () => {
             </div>
             <div className="grid grid-cols-3 gap-x-5 gap-y-10 mt-10">
               {data?.restaurants.results?.map((restaurant, index) => (
-                <div key={index}>
-                  <div
-                    style={{backgroundImage:`url(${restaurant.coverImage ? restaurant.coverImage : defaultRestaurantImage})`}}
-                    className="bg-red-500 py-28 bg-cover bg-center mb-2"></div>
-                  <h3 className="text-xl font-semibold">{ restaurant.name }</h3>
-                  <span className="border-t-2 border-lime-500">{ restaurant.category?.name }</span>
-                </div>
+                <Restaurant
+                  key={index}
+                  coverImage={restaurant.coverImage}
+                  name={restaurant.name}
+                  categoryName={restaurant.category?.name}
+                />
               ))}
+            </div>
+            <div className="grid grid-cols-3 text-center max-w-md mx-auto items-center">
+              { 1 < page ? (
+                <button
+                  onClick={onPrevPageClick}
+                  className="font-medium text-2xl focus:outline-none">
+                  &larr;
+                </button>
+              ) : <div></div>}
+              <span>
+                {page} of {data?.restaurants.totalPages}
+              </span>
+              {page !== data?.restaurants.totalPages ? (
+                <button
+                  onClick={onNextPageClick}
+                  className="font-medium text-2xl focus:outline-none">
+                  &rarr;
+                </button>
+              ) : <div></div>}
             </div>
           </div>
         )}
