@@ -19,6 +19,10 @@ export interface CreateAccountInput {
   role: UserRole;
 }
 
+export interface VerifyEmailInput {
+  code: string;
+}
+
 //==============================================================
 // END Enums and Input Objects
 //==============================================================

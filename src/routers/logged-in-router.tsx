@@ -4,9 +4,12 @@ import Restaurants from '../pages/client/Restaurants';
 import { UserRole } from '../__generated__/globalTypes';
 import { Header } from '../components/Header';
 import { useMe } from '../hooks/useMe';
+import { NotFound } from '../pages/404';
+import ConfirmEmail from '../pages/user/ConfirmEmail';
 
 const ClientRoutes = [
-  <Route path='/' exact component={Restaurants} />,
+  <Route key={1} path='/' exact component={Restaurants} />,
+  <Route key={2} path='/confirm' exact component={ConfirmEmail} />,
 ];
 
 const LoggedInRouter = () => {
@@ -23,7 +26,8 @@ const LoggedInRouter = () => {
       <Header />
       <Switch>
         { data.me.role === UserRole.Client && ClientRoutes}
-        <Redirect to='/' />
+        <Route component={NotFound}/>
+        {/* <Redirect to='/' /> */}
       </Switch>
     </Router>
   )
