@@ -1,29 +1,16 @@
-import { gql, useQuery } from '@apollo/client';
 import React from 'react';
 import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
 import Restaurants from '../pages/client/Restaurants';
 import { UserRole } from '../__generated__/globalTypes';
-import { meQuery } from '../__generated__/meQuery';
+import { Header } from '../components/Header';
+import { useMe } from '../hooks/useMe';
 
 const ClientRoutes = [
   <Route path='/' exact component={Restaurants} />,
 ];
 
-
-const ME_QUERY = gql`
-  query meQuery {
-    me {
-      id
-      email
-      role
-      verified
-    }
-  }
-`
-
 const LoggedInRouter = () => {
-  const { data, loading, error } = useQuery<meQuery>(ME_QUERY);
-  console.log('error', error);
+  const { data, loading, error } = useMe();
   if (!data || loading || error) {
     return (
       <div className="h-screen flex justify-center items-center">
@@ -33,6 +20,7 @@ const LoggedInRouter = () => {
   }
   return (
     <Router>
+      <Header />
       <Switch>
         { data.me.role === UserRole.Client && ClientRoutes}
         <Redirect to='/' />
