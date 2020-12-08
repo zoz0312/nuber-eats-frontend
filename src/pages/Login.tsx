@@ -1,10 +1,12 @@
-import { ApolloError, gql, useMutation } from '@apollo/client';
+import { gql, useMutation } from '@apollo/client';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
+import Helmet from 'react-helmet';
 import Button from '../components/Button';
 import FormError from '../components/FormError';
 import { loginMutation, loginMutationVariables } from '../__generated__/loginMutation';
+import { isLoggedInVar } from '../apollo';
 
 
 const LOGIN_MUTATION = gql`
@@ -29,25 +31,19 @@ const Login = () => {
   const {
     register,
     getValues,
-    watch,
     errors,
     handleSubmit,
     formState,
   } = useForm<ILoginForm>({
     mode: 'onChange'
   });
-  console.log('formState.isValid', formState.isValid)
 
   const onCompleted = (data: loginMutation) => {
-    const { login: { ok, error, token } } = data;
+    const { login: { ok, token } } = data;
     if (ok) {
       console.log(token)
+      isLoggedInVar(true);
     }
-    //  else {
-    //   if (error) {
-    //     console.log('error', error);
-    //   }
-    // }
   }
 
   const [loginMutation, { data: loginMutationResult, loading }] = useMutation<
@@ -72,6 +68,9 @@ const Login = () => {
 
   return (
     <div className="h-screen flex items-center flex-col">
+      <Helmet>
+        <title>Login | Number Eats</title>
+      </Helmet>
       <div className="w-full mt-10 lg:mt-32 max-w-screen-sm flex flex-col items-center">
         <img src='' className="w-60 h-16 mb-3" />
         <h4 className="w-full font-semibold text-left pl-5 text-2xl mb-6">Welcome back</h4>
@@ -80,7 +79,10 @@ const Login = () => {
           className="grid gap-5 my-5 px-5 w-full"
         >
           <input
-            ref={register({ required: 'Email is required' })}
+            ref={register({
+              required: 'Email is required',
+              pattern: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+            })}
             name="email"
             type="email"
             placeholder="Email"
@@ -88,6 +90,9 @@ const Login = () => {
           />
           { errors.email?.message && (
             <FormError errorMessage={errors.email?.message} />
+          )}
+          { errors.email?.type === 'pattern' && (
+            <FormError errorMessage={`Please enter a valid email`} />
           )}
           <input
             ref={register({
