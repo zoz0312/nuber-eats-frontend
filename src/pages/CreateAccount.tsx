@@ -2,7 +2,7 @@ import { gql, useMutation } from '@apollo/client';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useHistory } from 'react-router-dom';
-import Helmet from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import Button from '../components/Button';
 import FormError from '../components/FormError';
 import { UserRole } from '../__generated__/globalTypes';
@@ -41,6 +41,7 @@ const CreateAccount = () => {
   const onCompleted = (data: createAccountMutation) => {
     const { createAccount: { ok } } = data;
     if (ok) {
+      alert('아이디가 생성되었습니다!\n로그인 해주세요!')
       history.push('/login');
     }
   }
