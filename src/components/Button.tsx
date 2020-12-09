@@ -12,7 +12,9 @@ const Button: React.FC<IButtonProps> = ({
   actionText,
 }) => {
   return (
-    <button className={`text-lg text-white py-4 transition-colors focus:outline-none ${
+    <button
+      role="button"
+      className={`text-lg text-white py-4 transition-colors focus:outline-none ${
       canClick
         ? 'bg-lime-600 hover:bg-lime-700'
         : 'bg-gray-400 pointer-events-none'

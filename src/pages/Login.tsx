@@ -10,7 +10,7 @@ import { authTokenVar, isLoggedInVar } from '../apollo';
 import { EMAIL_PATTERN, LOCALSTORAGE_TOKEN } from '../constants';
 import logo from '../images/logo.svg';
 
-const LOGIN_MUTATION = gql`
+export const LOGIN_MUTATION = gql`
   mutation loginMutation($email: String!, $password: String!) {
     login(input: {
       email: $email,
@@ -106,9 +106,9 @@ const Login = () => {
             placeholder="Password"
             className="input"
           />
-          { errors.password?.type === 'minLength' && (
+          {/* { errors.password?.type === 'minLength' && (
             <FormError errorMessage={'비밀번호는 최소 10자 이상이어야 합니다.'} />
-          )}
+          )} */}
           { errors.password?.message && (
             <FormError errorMessage={errors.password?.message} />
           )}

@@ -65,6 +65,7 @@
     ]
   },
   "devDependencies": {
-    "@types/react-helmet": "^6.1.0"
+    "@types/react-helmet": "^6.1.0",
+    "mock-apollo-client": "^1.0.0"
   }
 }
