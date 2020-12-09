@@ -5,3 +5,7 @@
 .input {
   @apply p-3 border-2 border-gray-300 text-lg font-light focus:outline-none focus:border-gray-500 transition-colors;
 }
+
+.common-article {
+  @apply w-full px-5 xl:px-0 mt-10 max-w-screen-xl mx-auto;
+}

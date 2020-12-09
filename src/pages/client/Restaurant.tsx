@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { RESTUARANT_FRAGMENT } from '../../fragments';
 import { restaurant, restaurantVariables } from '../../__generated__/restaurant';
 import { Helmet } from 'react-helmet';
+import Dish from '../../components/Dish';
 
 const RESTAURANT_QUERY = gql`
   query restaurant($input: RestaurantInput!) {
@@ -12,6 +13,16 @@ const RESTAURANT_QUERY = gql`
       error
       restaurant {
         ...RestaurantParts
+        menu {
+          id
+          name
+          price
+          photo
+          description
+          options {
+            name
+          }
+        }
       }
     }
   }
@@ -35,12 +46,13 @@ const ClientRestaurant: React.FC = () => {
     }
   });
 
+  console.log('data?.restaurant.restaurant?.menu', data?.restaurant.restaurant?.menu)
   return (
     <div>
       <Helmet>
-        <title>{ data?.restaurant.restaurant?.name } | Nuber Eats</title>
+        <title>{`${data?.restaurant.restaurant?.name} | Nuber Eats`}</title>
       </Helmet>
-      <div
+      <header
         className="bg-gray-800 py-32 bg-cover bg-center"
         style={{backgroundImage: `url(${data?.restaurant.restaurant?.coverImage})`}}
       >
@@ -49,7 +61,18 @@ const ClientRestaurant: React.FC = () => {
           <h5 className="text-sm mb-3 font-light">{ data?.restaurant.restaurant?.category?.name }</h5>
           <h6 className="text-sm font-light">{ data?.restaurant.restaurant?.address }</h6>
         </div>
-      </div>
+      </header>
+      <article className="common-article">
+      { data?.restaurant.restaurant?.menu.length !== 0 ? (
+        <div className="grid md:grid-cols-3 gap-x-7">
+          {data?.restaurant.restaurant?.menu.map(menu => (
+            <Dish menu={menu} />
+          ))}
+        </div>
+      ) : (
+        <div className="text-center text-2xl">메뉴가 없습니다.</div>
+      )}
+      </article>
     </div>
   );
 }

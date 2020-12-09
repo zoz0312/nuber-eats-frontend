@@ -86,7 +86,7 @@ const ClientCategory: React.FC = () => {
           <h4 className="text-3xl">{ data?.category.category?.name }</h4>
         </div>
       </header>
-      <article className="w-full px-5 xl:px-0 mt-10 max-w-screen-xl mx-auto">
+      <article className="common-article">
         <h3 className="text-2xl font-medium">{`${data?.category.totalResults} Restaurants`}</h3>
         <div className="grid md:grid-cols-3 gap-x-5 gap-y-10 pb-10 mt-10 mb-10">
           {itemList.map((restaurant, index) => (
