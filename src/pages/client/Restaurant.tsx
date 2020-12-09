@@ -46,7 +46,7 @@ const ClientRestaurant: React.FC = () => {
     }
   });
 
-  console.log('data?.restaurant.restaurant?.menu', data?.restaurant.restaurant?.menu)
+
   return (
     <div>
       <Helmet>
