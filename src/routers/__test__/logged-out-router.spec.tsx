@@ -1,8 +1,6 @@
 import React from 'react';
 import { render, RenderResult, waitFor } from '@testing-library/react';
-import { BrowserRouter as Router } from 'react-router-dom';
 import LoggedOutRouter from '../logged-out-router';
-
 
 jest.mock('../../pages/Login', () => {
   return () => <span>Login</span>

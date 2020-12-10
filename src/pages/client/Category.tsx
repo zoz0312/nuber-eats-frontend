@@ -7,7 +7,7 @@ import { Helmet } from 'react-helmet';
 import Restaurant from '../../components/Restaurant';
 import useScrollPage from '../../hooks/useScrollPage';
 
-const CATEGORY_QUERY = gql`
+export const CATEGORY_QUERY = gql`
   query category($input: CategoryInput!) {
     category(input: $input) {
       ok
