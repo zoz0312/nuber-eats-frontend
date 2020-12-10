@@ -31,7 +31,7 @@
     "web-vitals": "^0.2.4"
   },
   "scripts": {
-    "start": "npm run apollo:codegen && npm run tailwind:build & react-scripts start",
+    "start": "npm run apollo:codegen && npm run tailwind:build & react-scripts start --host 0.0.0.0",
     "build": "react-scripts build",
     "test": "react-scripts test --verbose",
     "test:cov": "npm run test -- --coverage --watchAll=false",
