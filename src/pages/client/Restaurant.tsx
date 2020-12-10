@@ -6,7 +6,7 @@ import { restaurant, restaurantVariables } from '../../__generated__/restaurant'
 import { Helmet } from 'react-helmet';
 import Dish from '../../components/Dish';
 
-const RESTAURANT_QUERY = gql`
+export const RESTAURANT_QUERY = gql`
   query restaurant($input: RestaurantInput!) {
     restaurant(input: $input) {
       ok

@@ -1,11 +1,9 @@
 import React from 'react';
 import { createMockClient, MockApolloClient } from 'mock-apollo-client';
-import { render } from '../../../test-utils';
-import { act, RenderResult, waitFor } from '@testing-library/react';
+import { render, wait, RenderResult, waitFor } from '../../../test-utils';
 import { ApolloProvider } from '@apollo/client';
 import ClientCategory, { CATEGORY_QUERY } from '../Category';
 import { category } from '../../../__generated__/category';
-import useScrollPage from '../../../hooks/useScrollPage';
 
 jest.mock('../../../components/Restaurant', () => {
   return () => <span>Restaurant</span>
@@ -16,17 +14,10 @@ let mockedObject = {
   y: 2,
   screenY: 2,
 };
+
 jest.mock('../../../hooks/useScrollPage', () => {
   return () => (mockedObject);
 });
-
-async function wait(ms = 0) {
-  await act(() => {
-    return new Promise(resolve => {
-      setTimeout(resolve, ms);
-    });
-  });
-}
 
 describe('<Category />', () => {
   let mockedClient: MockApolloClient;
