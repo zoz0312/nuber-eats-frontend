@@ -50,7 +50,7 @@ describe('<ConfirmEmail />', () => {
         });
       }
     );
-  })
+  });
 
   it('render verify false', async () => {
     await waitFor(() => {

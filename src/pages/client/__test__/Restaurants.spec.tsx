@@ -95,7 +95,6 @@ describe('<ClientRestaurants />', () => {
     await waitFor(() => {
       userEvent.type(serchTerm, formData.searchTerm);
       fireEvent.submit(serchTerm)
-      // userEvent.click(form)
     });
     expect(mockPush).toHaveBeenCalledWith({
       pathname: '/search',

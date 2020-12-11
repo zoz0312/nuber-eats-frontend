@@ -20,8 +20,6 @@ const ConfirmEmail: React.FC = () => {
 
   const onCompleted = async (data: verifyEmail) => {
     const { verifyEmail: { ok } } = data;
-    console.log('ok', ok)
-    console.log('userData', userData)
     if (ok && userData?.me.id) {
       await refetch();
       history.push('/')

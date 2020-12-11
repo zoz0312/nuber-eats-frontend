@@ -7,7 +7,7 @@ import { useMe } from '../../hooks/useMe';
 import { editProfile, editProfileVariables } from '../../__generated__/editProfile';
 import { Helmet } from 'react-helmet';
 
-const EDIT_PROFILE_MUTATION = gql`
+export const EDIT_PROFILE_MUTATION = gql`
   mutation editProfile($input: EditProfileInput!) {
     editProfile(input: $input) {
       ok
@@ -30,7 +30,6 @@ const EditProfile = () => {
       const { me: { email: prevEmail, id } } = userData;
       const { email: newEmail } = getValues();
       if (prevEmail !== newEmail) {
-        refetchUser();
         // client.writeFragment({
         //   id: `User:${id}`,
         //   fragment: gql`
@@ -76,7 +75,7 @@ const EditProfile = () => {
   return (
     <div className="mt-52 flex flex-col justify-center items-center">
       <Helmet>
-        <title>Edit Profile | Number Eats</title>
+        <title>Edit Profile | Nuber Eats</title>
       </Helmet>
       <h4 className="font-semibold text-2xl mb-3">Edit Profile</h4>
       <form

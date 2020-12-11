@@ -53,7 +53,6 @@ const ClientRestaurants: React.FC = () => {
   const history = useHistory();
   const onSearchSubmit = () => {
     const { searchTerm } = getValues();
-    console.log('onSearchSubmit', searchTerm)
     history.push({
       pathname: '/search',
       search: `?term=${searchTerm}`,
