@@ -10,16 +10,21 @@ import ClientSearch from '../pages/client/Search';
 import ClientCategory from '../pages/client/Category';
 import ClientRestaurants from '../pages/client/Restaurants';
 import ClientRestaurant from '../pages/client/Restaurant';
+import MyRestaurants from '../pages/owner/MyRestaurants';
 
-let keyValue = 0;
-const ClientRoutes = [
-  <Route key={keyValue++} path='/' exact component={ClientRestaurants} />,
-  <Route key={keyValue++} path='/confirm' exact component={ConfirmEmail} />,
-  <Route key={keyValue++} path='/edit-profile' exact component={EditProfile} />,
-  <Route key={keyValue++} path='/search' exact component={ClientSearch} />,
-  <Route key={keyValue++} path='/category/:slug' exact component={ClientCategory} />,
-  <Route key={keyValue++} path='/restaurant/:id' exact component={ClientRestaurant} />,
+const commonRoutes = [
+  { path: '/confirm', component: <ConfirmEmail /> },
+  { path: '/edit-profile', component: <EditProfile /> },
 ];
+const clientRoutes = [
+  { path: '/', component: <ClientRestaurants /> },
+  { path: '/search', component: <ClientSearch /> },
+  { path: '/category/:slug', component: <ClientCategory /> },
+  { path: 'restaurant/:id/', component: <ClientRestaurant /> },
+];
+const restaurantRoutes = [
+  { path: '/', component: <MyRestaurants /> }
+]
 
 const LoggedInRouter = () => {
   const { data, loading, error } = useMe();
@@ -34,7 +39,15 @@ const LoggedInRouter = () => {
     <Router>
       <Header />
       <Switch>
-        { data.me.role === UserRole.Client && ClientRoutes}
+        { commonRoutes.map(route => (
+          <Route path={route.path} key={route.path}>{ route.component }</Route>
+        ))}
+        { data.me.role === UserRole.Client && clientRoutes.map(route => (
+          <Route path={route.path} key={route.path}>{ route.component }</Route>
+        ))}
+        { data.me.role === UserRole.Owner && restaurantRoutes.map(route => (
+          <Route path={route.path} key={route.path}>{ route.component }</Route>
+        ))}
         <Route component={NotFound}/>
         {/* <Redirect to='/' /> */}
       </Switch>
