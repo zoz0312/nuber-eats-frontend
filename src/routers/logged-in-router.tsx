@@ -13,18 +13,18 @@ import ClientRestaurant from '../pages/client/Restaurant';
 import MyRestaurants from '../pages/owner/MyRestaurants';
 
 const commonRoutes = [
-  { path: '/confirm', component: <ConfirmEmail /> },
-  { path: '/edit-profile', component: <EditProfile /> },
+  { path: '/confirm', component: ConfirmEmail },
+  { path: '/edit-profile', component: EditProfile },
 ];
 const clientRoutes = [
-  { path: '/', component: <ClientRestaurants /> },
-  { path: '/search', component: <ClientSearch /> },
-  { path: '/category/:slug', component: <ClientCategory /> },
-  { path: 'restaurant/:id/', component: <ClientRestaurant /> },
+  { path: '/', component: ClientRestaurants },
+  { path: '/search', component: ClientSearch },
+  { path: '/category/:slug', component: ClientCategory },
+  { path: 'restaurant/:id/', component: ClientRestaurant },
 ];
 const restaurantRoutes = [
-  { path: '/', component: <MyRestaurants /> }
-]
+  { path: '/', component: MyRestaurants }
+];
 
 const LoggedInRouter = () => {
   const { data, loading, error } = useMe();
@@ -40,13 +40,13 @@ const LoggedInRouter = () => {
       <Header />
       <Switch>
         { commonRoutes.map(route => (
-          <Route path={route.path} key={route.path}>{ route.component }</Route>
+          <Route exact path={route.path} key={route.path} component={route.component} />
         ))}
         { data.me.role === UserRole.Client && clientRoutes.map(route => (
-          <Route path={route.path} key={route.path}>{ route.component }</Route>
+          <Route exact path={route.path} key={route.path} component={route.component} />
         ))}
         { data.me.role === UserRole.Owner && restaurantRoutes.map(route => (
-          <Route path={route.path} key={route.path}>{ route.component }</Route>
+          <Route exact path={route.path} key={route.path} component={route.component} />
         ))}
         <Route component={NotFound}/>
         {/* <Redirect to='/' /> */}

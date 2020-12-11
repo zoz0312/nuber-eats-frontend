@@ -29,6 +29,10 @@ export interface EditProfileInput {
   password?: string | null;
 }
 
+export interface MyRestaurantsInput {
+  page?: number | null;
+}
+
 export interface RestaurantInput {
   restaurantId: number;
 }

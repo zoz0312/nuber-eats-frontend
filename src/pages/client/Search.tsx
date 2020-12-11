@@ -26,9 +26,8 @@ const ClientSearch: React.FC = () => {
   const location = useLocation();
   const history = useHistory();
   const query = location.search.split('?term=')[1];
-  const [page, setPage] = useState(1);
   const [itemList, setItemList] = useState<searchRestaurant_searchRestaurant_restaurants[]>([]);
-  const scrollState = useScrollPage();
+  const { page, setTotalPages } = useScrollPage(1);
   const { loading, data } = useQuery<
     searchRestaurant,
     searchRestaurantVariables
@@ -38,17 +37,9 @@ const ClientSearch: React.FC = () => {
         page,
         query,
       }
-    }
+    },
+    fetchPolicy: "network-only"
   });
-
-  // startQuery({
-  //   variables: {
-  //     input: {
-  //       page,
-  //       query,
-  //     }
-  //   }
-  // });
 
   useEffect(() => {
     if (!query) {
@@ -58,7 +49,8 @@ const ClientSearch: React.FC = () => {
 
   useEffect(() => {
     if (data && data.searchRestaurant.restaurants) {
-      const { searchRestaurant: { restaurants } } = data;
+      const { searchRestaurant: { restaurants, totalPages } } = data;
+      setTotalPages(totalPages);
       if (restaurants) {
         setItemList([
           ...itemList,
@@ -68,18 +60,6 @@ const ClientSearch: React.FC = () => {
     }
   }, [data]);
 
-  useEffect(() => {
-    if (!data || !data.searchRestaurant.totalPages) {
-      return;
-    }
-    const { y, screenY } = scrollState;
-    if (y === screenY) {
-      if (!loading && page < data.searchRestaurant.totalPages) {
-        setPage(current => current + 1)
-      }
-    }
-  }, [scrollState]);
-
   return (
     <div>
       <Helmet>
@@ -88,7 +68,7 @@ const ClientSearch: React.FC = () => {
       <header className="bg-gray-200 w-screen py-10 text-center">
         <h4 className="text-3xl">{ query } / {`${data?.searchRestaurant.totalResults} Restaurants`}</h4>
       </header>
-      <article>
+      <article className="common-article">
         <div className="grid md:grid-cols-3 gap-x-5 gap-y-10 pb-10 mt-10 mb-10">
           {itemList.map(restaurant => (
             <Restaurant

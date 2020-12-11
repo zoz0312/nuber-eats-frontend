@@ -31,8 +31,8 @@ interface ICategoryParams {
 };
 
 const ClientCategory: React.FC = () => {
-  const [page, setPage] = useState(1);
-  const scrollState = useScrollPage();
+  // const [page, setPage] = useState(1);
+  const { page, setTotalPages } = useScrollPage(1);
   const [itemList, setItemList] = useState<category_category_category_restaurants[]>([]);
   const params = useParams<ICategoryParams>();
   const { data, loading } = useQuery<
@@ -44,12 +44,14 @@ const ClientCategory: React.FC = () => {
         page,
         slug: params.slug,
       }
-    }
+    },
+    fetchPolicy: "network-only"
   });
 
   useEffect(() => {
     if (data && data.category.category) {
-      const { category: { category } } = data;
+      const { category: { category, totalPages } } = data;
+      setTotalPages(totalPages);
       if (category.restaurants) {
         setItemList([
           ...itemList,
@@ -58,18 +60,6 @@ const ClientCategory: React.FC = () => {
       }
     }
   }, [data]);
-
-  useEffect(() => {
-    if (!data || !data.category.totalPages) {
-      return;
-    }
-    const { y, screenY } = scrollState;
-    if (y === screenY) {
-      if (!loading && page < data.category.totalPages) {
-        setPage(current => current + 1)
-      }
-    }
-  }, [scrollState]);
 
   return (
     <section className="max-w-screen">

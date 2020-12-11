@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react';
 
 interface IUseScrollPage {
-  x: number;
-  y: number;
-  screenY: number;
+  page: number;
+  setTotalPages: Function;
 }
 
 const useScrollPage = (
+  initPage: number
 ): IUseScrollPage => {
+  const [page, setPage] = useState(initPage);
+  const [totalPage, setTotalPage] = useState(0);
   const [state, setState] = useState({
     x: 0,
     y: 0,
@@ -25,14 +27,28 @@ const useScrollPage = (
     });
   }
 
+  const setTotalPages = (totalPages: number) => {
+    if (totalPage === 0) {
+      setTotalPage(totalPages);
+    }
+  }
+
   useEffect(() => {
     window.addEventListener('scroll', onScroll);
     return () => {
       window.removeEventListener('scroll', onScroll);
     }
-  }, [])
+  }, []);
 
-  return state;
+  useEffect(() => {
+    if (state.y === state.screenY) {
+      if (page < totalPage) {
+        setPage(current => current + 1);
+      }
+    }
+  }, [state, totalPage]);
+
+  return { page, setTotalPages };
 }
 
 export default useScrollPage;
