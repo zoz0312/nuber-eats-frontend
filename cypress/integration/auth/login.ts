@@ -19,15 +19,11 @@ describe('Login', () => {
     cy.findByRole('alert').should('have.text', 'Password is required');
   });
 
-  it('can fill out the form', () => {
+  it('can fill out the form login', () => {
     cy.visit('/');
     cy.findByPlaceholderText(/email/i).type('aju.an@gmail.com');
     cy.findByPlaceholderText(/password/i).type('121212');
     cy.findByRole('button').should('not.have.class', 'pointer-events-none').click();
     cy.window().its('localStorage.nuber-token').should('be.a', 'string');
   });
-
-  it('sign up', () => {
-    cy.visit('/create-account')
-  })
 });

@@ -104,7 +104,7 @@ const CreateAccount = () => {
           <input
             ref={register({
               required: 'Password is required',
-              minLength: 5,
+              minLength: 10,
             })}
             name="password"
             type="password"
