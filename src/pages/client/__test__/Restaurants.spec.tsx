@@ -90,7 +90,7 @@ describe('<ClientRestaurants />', () => {
     const formData = {
       searchTerm: 'testing',
     };
-    const { debug, getByPlaceholderText } = renderResult;
+    const { getByPlaceholderText } = renderResult;
     const serchTerm = getByPlaceholderText(/search restaurats.../i);
     await waitFor(() => {
       userEvent.type(serchTerm, formData.searchTerm);
@@ -101,7 +101,6 @@ describe('<ClientRestaurants />', () => {
       pathname: '/search',
       search: `?term=testing`,
     });
-    debug();
   });
 
   afterAll(() => {

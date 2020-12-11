@@ -7,7 +7,7 @@ import { searchRestaurant, searchRestaurantVariables, searchRestaurant_searchRes
 import Restaurant from '../../components/Restaurant';
 import useScrollPage from '../../hooks/useScrollPage';
 
-const SEARCH_RESTAURANT = gql`
+export const SEARCH_RESTAURANT = gql`
   query searchRestaurant($input: SearchRestaurantInput!) {
     searchRestaurant(input: $input) {
       ok
