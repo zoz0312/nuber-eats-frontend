@@ -1,3 +1,5 @@
+import { HOST } from './../../support/constants';
+
 describe('Create Account', () => {
   it('Should see email & password validation error', () => {
     cy.visit('/');
@@ -14,19 +16,13 @@ describe('Create Account', () => {
   });
 
   it('Should be able to create account & login', () => {
-    cy.intercept('http://192.168.219.200:4000/graphql', (req) => {
+    cy.intercept(HOST, (req) => {
       const { operationName } = req.body;
       if (operationName) {
         if (operationName === 'createAccountMutation') {
           req.reply((res) => {
             res.send({
-              data: {
-                createAccount: {
-                  ok: true,
-                  error: null,
-                  __typename: 'CreateAccountOutput',
-                }
-              }
+              fixture: 'auth/create-account.json'
             })
           })
         }

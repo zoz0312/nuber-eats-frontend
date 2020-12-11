@@ -32,16 +32,21 @@ Cypress.Commands.add('assertLoggedOut', () => {
   cy.window().its('localStorage.nuber-token').should('be.undefined');
 });
 
-Cypress.Commands.add('login', (email, password) => {
+Cypress.Commands.add('login', (email = 'aju.an@gmail.com', password = '121212') => {
   // @ts-ignore
   cy.assertLoggedOut();
   cy.visit('/');
-  cy.title().should('eq', 'Login | Nuber Eats');
-  cy.findAllByPlaceholderText(/email/i).type('aju.an@gmail.com');
-  cy.findAllByPlaceholderText(/password/i).type('121212');
+  // @ts-ignore
+  cy.assertTitle('Login | Nuber Eats');
+  cy.findAllByPlaceholderText(/email/i).type(email);
+  cy.findAllByPlaceholderText(/password/i).type(password);
   cy.findByRole('button').should('not.have.class', 'pointer-events-none').click();
   // @ts-ignore
   cy.assertLoggedIn();
+});
+
+Cypress.Commands.add('assertTitle', title => {
+  cy.title().should('eq', title);
 })
 
 
