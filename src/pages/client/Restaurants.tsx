@@ -7,7 +7,7 @@ import { Link, useHistory } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { CATEGORY_FRAGMENT, RESTUARANT_FRAGMENT } from '../../fragments';
 
-const RESTAURANTS_QUERY = gql`
+export const RESTAURANTS_QUERY = gql`
   query restaurantsPageQuery($input: RestaurantsInput!) {
     allcategories {
       ok
@@ -29,9 +29,6 @@ const RESTAURANTS_QUERY = gql`
   ${RESTUARANT_FRAGMENT}
   ${CATEGORY_FRAGMENT}
 `;
-
-const defaultCategoryImage = 'https://www.nicepng.com/png/full/131-1314271_food-icon-food-court-icon-png.png';
-const defaultRestaurantImage = 'https://www.bbq.co.kr/images/common/logo_header_bbq.png';
 
 interface IFormProps {
   searchTerm: string;
@@ -56,6 +53,7 @@ const ClientRestaurants: React.FC = () => {
   const history = useHistory();
   const onSearchSubmit = () => {
     const { searchTerm } = getValues();
+    console.log('onSearchSubmit', searchTerm)
     history.push({
       pathname: '/search',
       search: `?term=${searchTerm}`,
@@ -68,6 +66,7 @@ const ClientRestaurants: React.FC = () => {
         <title>Home | Nuber Eats</title>
       </Helmet>
       <form
+        role="form"
         onSubmit={handleSubmit(onSearchSubmit)}
         className="bg-gray-800 w-full py-40 flex items-center justify-center">
         <input
@@ -86,7 +85,7 @@ const ClientRestaurants: React.FC = () => {
                 <div
                   className="w-16 flex flex-col items-center group">
                   <div
-                    style={{backgroundImage: `url(${category.coverImage ? category.coverImage : defaultCategoryImage})`}}
+                    style={{backgroundImage: `url(${category.coverImage})`}}
                     className="w-16 h-16 rounded-full bg-cover group-hover:bg-gray-100 cursor-pointer">
                   </div>
                   <span className="mt-1 text-sm text-center font-bold break-all">{ category.name }</span>

@@ -65,8 +65,8 @@ const ClientRestaurant: React.FC = () => {
       <article className="common-article">
       { data?.restaurant.restaurant?.menu.length !== 0 ? (
         <div className="grid md:grid-cols-3 gap-x-7">
-          {data?.restaurant.restaurant?.menu.map(menu => (
-            <Dish menu={menu} />
+          {data?.restaurant.restaurant?.menu.map((menu, index) => (
+            <Dish key={index} menu={menu} />
           ))}
         </div>
       ) : (

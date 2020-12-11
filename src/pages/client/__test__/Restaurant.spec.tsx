@@ -13,7 +13,6 @@ describe('<ClientRestaurant />', () => {
   let mockedClient: MockApolloClient;
   let renderResult: RenderResult;
 
-  let queryLoading = false;
   const returnData: restaurant = {
     restaurant: {
       __typename: "RestaurantOutput",
@@ -53,7 +52,6 @@ describe('<ClientRestaurant />', () => {
             data: {
               ...returnData
             },
-            loading: queryLoading,
           });
         }
       );
@@ -79,7 +77,6 @@ describe('<ClientRestaurant />', () => {
             data: {
               ...returnData
             },
-            loading: queryLoading,
           });
         }
       );
