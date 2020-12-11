@@ -14,13 +14,34 @@ describe('Create Account', () => {
   });
 
   it('Should be able to create account & login', () => {
+    cy.intercept('http://192.168.219.200:4000/graphql', (req) => {
+      const { operationName } = req.body;
+      if (operationName) {
+        if (operationName === 'createAccountMutation') {
+          req.reply((res) => {
+            res.send({
+              data: {
+                createAccount: {
+                  ok: true,
+                  error: null,
+                  __typename: 'CreateAccountOutput',
+                }
+              }
+            })
+          })
+        }
+      }
+    })
+
     cy.visit('/create-account');
-    cy.findAllByPlaceholderText(/email/i).type('real4@gmail.com')
-    cy.findAllByPlaceholderText(/password/i).type('real4@gmail.com')
+    cy.findAllByPlaceholderText(/email/i).type('aju.an@gmail.com');
+    cy.findAllByPlaceholderText(/password/i).type('121212121212');
     cy.findByRole('button').click();
     cy.wait(1000);
-    cy.findAllByPlaceholderText(/email/i).type('real4@gmail.com')
-    cy.findAllByPlaceholderText(/password/i).type('real4@gmail.com')
+    cy.title().should('eq', 'Login | Nuber Eats');
+
+    cy.findAllByPlaceholderText(/email/i).type('aju.an@gmail.com');
+    cy.findAllByPlaceholderText(/password/i).type('121212');
     cy.findByRole('button').click();
     cy.window().its('localStorage.nuber-token').should('be.a', 'string');
   })
