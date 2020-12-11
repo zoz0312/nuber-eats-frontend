@@ -59,7 +59,7 @@ const MyRestaurants: React.FC = () => {
           <>
             <h4 className="text-xl mb-5">나의 가게가 없습니다!</h4>
             <Link
-              className="text-lime-600 hover:underline"
+              className="link"
               to="/add-restaurant"
             >
               Create One &rarr;

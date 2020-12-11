@@ -11,6 +11,7 @@ import ClientCategory from '../pages/client/Category';
 import ClientRestaurants from '../pages/client/Restaurants';
 import ClientRestaurant from '../pages/client/Restaurant';
 import MyRestaurants from '../pages/owner/MyRestaurants';
+import AddRestaurant from '../pages/owner/AddRestaurants';
 
 const commonRoutes = [
   { path: '/confirm', component: ConfirmEmail },
@@ -23,7 +24,8 @@ const clientRoutes = [
   { path: 'restaurant/:id/', component: ClientRestaurant },
 ];
 const restaurantRoutes = [
-  { path: '/', component: MyRestaurants }
+  { path: '/', component: MyRestaurants },
+  { path: '/add-restaurant', component: AddRestaurant },
 ];
 
 const LoggedInRouter = () => {
