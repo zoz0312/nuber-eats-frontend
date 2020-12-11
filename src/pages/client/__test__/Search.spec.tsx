@@ -4,6 +4,7 @@ import { render, wait, RenderResult, waitFor } from '../../../test-utils';
 import { ApolloProvider } from '@apollo/client';
 import ClientSearch, { SEARCH_RESTAURANT } from '../Search';
 import { searchRestaurant } from '../../../__generated__/searchRestaurant';
+import { ME_QUERY } from '../../../hooks/useMe';
 
 jest.mock('../../../components/Restaurant', () => {
   return () => <span>Restaurant</span>

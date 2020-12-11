@@ -4,7 +4,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { useMe } from '../../hooks/useMe';
 import { verifyEmail, verifyEmailVariables } from '../../__generated__/verifyEmail';
 
-const VERIFY_EMAIL_MUTATION = gql`
+export const VERIFY_EMAIL_MUTATION = gql`
   mutation verifyEmail($input: VerifyEmailInput!) {
     verifyEmail(input: $input) {
       ok
@@ -20,19 +20,10 @@ const ConfirmEmail: React.FC = () => {
 
   const onCompleted = async (data: verifyEmail) => {
     const { verifyEmail: { ok } } = data;
+    console.log('ok', ok)
+    console.log('userData', userData)
     if (ok && userData?.me.id) {
       await refetch();
-      // client.writeFragment({
-      //   id: `User:${userData.me.id}`,
-      //   fragment: gql`
-      //     fragment VerifyedUser on User {
-      //       verified
-      //     }
-      //   `,
-      //   data: {
-      //     verified: true
-      //   },
-      // })
       history.push('/')
     }
   };
