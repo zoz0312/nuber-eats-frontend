@@ -27,7 +27,7 @@ describe('<Login />', () => {
 
   it('render Login Page', async() => {
     await waitFor(() => {
-      expect(document.title).toBe('Login | Number Eats');
+      expect(document.title).toBe('Login | Nuber Eats');
     });
   });
 

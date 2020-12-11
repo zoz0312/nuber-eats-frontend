@@ -71,7 +71,7 @@ const Login = () => {
   return (
     <div className="h-screen flex items-center flex-col">
       <Helmet>
-        <title>Login | Number Eats</title>
+        <title>Login | Nuber Eats</title>
       </Helmet>
       <div className="w-full mt-10 lg:mt-32 max-w-screen-sm flex flex-col items-center">
         <img src={logo} className="w-60 h-16 mb-3" />
