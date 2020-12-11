@@ -20,10 +20,7 @@ describe('Login', () => {
   });
 
   it('can fill out the form login', () => {
-    cy.visit('/');
-    cy.findByPlaceholderText(/email/i).type('aju.an@gmail.com');
-    cy.findByPlaceholderText(/password/i).type('121212');
-    cy.findByRole('button').should('not.have.class', 'pointer-events-none').click();
-    cy.window().its('localStorage.nuber-token').should('be.a', 'string');
+    // @ts-ignore
+    cy.login('aju.an@gmail.com', '121212')
   });
 });

@@ -38,11 +38,8 @@ describe('Create Account', () => {
     cy.findAllByPlaceholderText(/password/i).type('121212121212');
     cy.findByRole('button').click();
     cy.wait(1000);
-    cy.title().should('eq', 'Login | Nuber Eats');
 
-    cy.findAllByPlaceholderText(/email/i).type('aju.an@gmail.com');
-    cy.findAllByPlaceholderText(/password/i).type('121212');
-    cy.findByRole('button').click();
-    cy.window().its('localStorage.nuber-token').should('be.a', 'string');
-  })
-})
+    // @ts-ignore
+    cy.login('aju.an@gmail.com', '121212')
+  });
+});
