@@ -5,6 +5,7 @@ import { RESTUARANT_FRAGMENT, DISH_FRAGMENT } from './../../fragments';
 import { myRestaurant, myRestaurantVariables } from './../../__generated__/myRestaurant';
 import { Helmet } from 'react-helmet-async';
 import Article from '../../components/Article';
+import Dish from './../../components/Dish';
 
 export const MY_RESTAURANT_QUERY = gql`
   query myRestaurant($input: MyRestaurantInput!) {
@@ -68,18 +69,22 @@ const MyRestaurant: React.FC = () => {
             className="text-white bg-lime-700 py-3 px-10"
           >Buy Promition &rarr;</Link>
         </div>
-        <div>
+        <div className="mt-10">
           {data?.myRestaurant.restaurant?.menu.length === 0 ? (
             <div className="text-xl mb-5">You have no dishies</div>
           ) : (
-            <div>
-              { data?.myRestaurant.restaurant?.menu.map(dish => (
-                <div>
-                  { dish.name }
-                </div>
-              )) }
+            <div className="grid md:grid-cols-3 gap-x-7 gap-y-4">
+            { data?.myRestaurant.restaurant?.menu.map((dish, index) => (
+              <Dish key={index} menu={dish} />
+            ))}
             </div>
           )}
+        </div>
+        <div className="mt-20">
+          <h4 className="text-center text-xl font-medium">Sales</h4>
+          <div className="max-w-sm w-full ">
+
+          </div>
         </div>
       </Article>
     </div>

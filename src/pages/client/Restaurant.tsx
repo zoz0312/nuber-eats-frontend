@@ -65,7 +65,7 @@ const ClientRestaurant: React.FC = () => {
       </header>
       <Article loading={loading}>
         { data?.restaurant.restaurant?.menu.length !== 0 ? (
-          <div className="grid md:grid-cols-3 gap-x-7">
+          <div className="grid md:grid-cols-3 gap-x-7 gap-y-4">
             {data?.restaurant.restaurant?.menu.map((menu, index) => (
               <Dish key={index} menu={menu} />
             ))}
