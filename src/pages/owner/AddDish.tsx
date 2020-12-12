@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import { gql, useMutation } from '@apollo/client';
 import { createDish, createDishVariables } from './../../__generated__/createDish';
@@ -25,11 +25,14 @@ interface IDishForm {
   name: string;
   price: string;
   description: string;
+  [key: string]: string;
 }
 
 const AddDish: React.FC = () => {
   const { id } = useParams<IParams>();
   const history = useHistory();
+  const [options, setOptions] = useState<number[]>([]);
+  const [choices, setChoices] = useState<{optionId: number, id: number}[]>([]);
 
   const onCompleted = (data: createDish) => {
     const { createDish: { ok } } = data;
@@ -58,14 +61,30 @@ const AddDish: React.FC = () => {
     getValues,
     formState,
     handleSubmit,
+    setValue,
   } = useForm<IDishForm>({
     mode: 'onChange',
   });
 
   const onSubmit = () => {
-    // TODO: submit
     if (loading) { return; }
-    const { name, price, description } = getValues();
+    const { name, price, description, ...dishOption } = getValues();
+    console.log('dishOption', dishOption)
+    const dishOptions = options.map(theId => {
+      const optionChoice =
+        choices
+          .filter(choice => choice.optionId === theId)
+          .map(choice => ({
+            name: dishOption[`choiceName-${theId}-${choice.id}`],
+            extra: +dishOption[`choiceExtra-${theId}-${choice.id}`],
+          }));
+      return {
+        name: dishOption[`optionName-${theId}`],
+        extra: +dishOption[`optionExtra-${theId}`],
+        choices: optionChoice,
+      }
+    });
+
     createDishMutation({
       variables: {
         input: {
@@ -73,10 +92,33 @@ const AddDish: React.FC = () => {
           price: +price,
           description,
           restaurantId: +id,
+          options: dishOptions,
         }
       }
     });
-    history.goBack();
+    // history.goBack();
+  }
+
+  const onAddOptionClick = () => {
+    setOptions(current => [...current, Date.now()]);
+  };
+
+  const onAddChoiceClick = (optionId: number) => {
+    setChoices(current => [...current, { optionId, id: Date.now() } ]);
+  }
+
+  const onDeleteOptionClick = (idToDelete: number) => {
+    setOptions(current => current.filter(id => id !== idToDelete));
+
+    setValue(`optionName-${idToDelete}`, '');
+    setValue(`optionExtra-${idToDelete}`, '0');
+  }
+
+  const onDeleteChoiceClick = (optionId: number, choiceId: number) => {
+    setChoices(current => current.filter(choice => choice.optionId === optionId && choice.id !== choiceId));
+
+    setValue(`choiceName-${optionId}-${choiceId}`, '');
+    setValue(`choiceExtra-${optionId}-${choiceId}`, '0');
   }
 
   return (
@@ -117,6 +159,89 @@ const AddDish: React.FC = () => {
             type="text"
             required
           />
+          <div
+            className="flex flex-col items-start"
+          >
+            {options.length !== 0 &&
+              options.map((id) => (
+              <>
+                <div
+                  key={id}
+                  className="mt-5 flex flex-row justify-center items-center"
+                >
+                  <input
+                    ref={register({required: true})}
+                    name={`optionName-${id}`}
+                    type="text"
+                    placeholder="Option Name"
+                    className="mr-2 input-sm"
+                  />
+                  <input
+                    ref={register({required: true})}
+                    name={`optionExtra-${id}`}
+                    type="number"
+                    min={0}
+                    placeholder="Option Extra"
+                    defaultValue={0}
+                    className="mr-2 input-sm"
+                  />
+                  <div className="inline-block">
+                    <button
+                      type="button"
+                      role="add-chice-btn"
+                      onClick={() => onAddChoiceClick(id)}
+                      className="cursor-pointer text-white bg-lime-600 py-1 px-2 hover:bg-lime-700 transition-colors"
+                    >Add Dish Choice</button>
+                    <button
+                      role="delete-option-btn"
+                      type="button"
+                      className="bg-red-500 text-white w-8 h-8 font-bold hover:bg-red-700 transition-colors"
+                      onClick={() => onDeleteOptionClick(id)}
+                    >X</button>
+                  </div>
+                </div>
+                  {choices.length !== 0 &&(
+                    choices.filter(chioce => chioce.optionId === id).map(choiceId => (
+                      <div
+                        key={choiceId.id}
+                        className="mt-2 ml-10 flex flex-row items-center"
+                      >
+                        <input
+                          ref={register({required: true})}
+                          name={`choiceName-${id}-${choiceId.id}`}
+                          type="text"
+                          placeholder="Choice Name"
+                          minLength={2}
+                          className="mr-2  input-sm"
+                        />
+                        <input
+                          ref={register({required: true})}
+                          name={`choiceExtra-${id}-${choiceId.id}`}
+                          type="number"
+                          placeholder="Choice Extra"
+                          defaultValue={0}
+                          min={0}
+                          className="mr-2 input-sm"
+                        />
+                        <button
+                          role="delete-option-btn"
+                          type="button"
+                          className="bg-red-500 text-white w-8 h-8 font-bold hover:bg-red-700 transition-colors"
+                          onClick={() => onDeleteChoiceClick(id, choiceId.id)}
+                        >X</button>
+                      </div>
+                    ))
+                  )}
+              </>))
+            }
+          </div>
+          <div className="text-center">
+            <button
+              type="button"
+              onClick={onAddOptionClick}
+              className="text-white py-1 px-2 w-1/3 text-center bg-lime-600 hover:bg-lime-700 transition-colors"
+            >옵션 추가하기</button>
+          </div>
           <Button
             canClick={formState.isValid}
             loading={loading}
