@@ -6,7 +6,7 @@ import { myRestaurant, myRestaurantVariables } from './../../__generated__/myRes
 import { Helmet } from 'react-helmet-async';
 import Article from '../../components/Article';
 
-const MY_RESTAURANT_QUERY = gql`
+export const MY_RESTAURANT_QUERY = gql`
   query myRestaurant($input: MyRestaurantInput!) {
     myRestaurant(input:$input) {
       ok
@@ -40,10 +40,11 @@ const MyRestaurant: React.FC = () => {
     }
   });
 
-  console.log('data', data?.myRestaurant.restaurant?.menu)
-
   return (
     <div>
+      <Helmet>
+        {`My Restaurant | Nuber Eats`}
+      </Helmet>
       <header>
         <div
           className="bg-gray-700 py-28 bg-cover bg-center"
@@ -53,16 +54,13 @@ const MyRestaurant: React.FC = () => {
         >
         </div>
       </header>
-      <Article
-        title="My Restaurant"
-        loading={loading}
-      >
+      <Article loading={loading}>
         <div className="text-4xl font-medium mb-10">
           {data?.myRestaurant.restaurant?.name}
         </div>
         <div className="my-3">
           <Link
-            to={``}
+            to={`/restaurant/${id}/add-dish`}
             className="mr-8 text-white bg-gray-800 py-3 px-10"
           >Add Dish &rarr;</Link>
           <Link

@@ -53,10 +53,7 @@ const MyRestaurants: React.FC = () => {
       <Helmet>
         <title>My Restaurants | Nuber Eats</title>
       </Helmet>
-      <Article
-        title={`My Restaurants`}
-        loading={loading}
-      >
+      <Article loading={loading}>
         <h2 className="text-4xl mb-10">My Restaurants</h2>
         { itemList.length === 0 ? (
           <>

@@ -50,6 +50,9 @@ const ClientRestaurant: React.FC = () => {
 
   return (
     <div>
+      <Helmet>
+        {`${data?.restaurant.restaurant?.name} | Nuber Eats`}
+      </Helmet>
       <header
         className="bg-gray-800 py-32 bg-cover bg-center"
         style={{backgroundImage: `url(${data?.restaurant.restaurant?.coverImage})`}}
@@ -60,10 +63,7 @@ const ClientRestaurant: React.FC = () => {
           <h6 className="text-sm font-light">{ data?.restaurant.restaurant?.address }</h6>
         </div>
       </header>
-      <Article
-        title={`${data?.restaurant.restaurant?.name}`}
-        loading={loading}
-      >
+      <Article loading={loading}>
         { data?.restaurant.restaurant?.menu.length !== 0 ? (
           <div className="grid md:grid-cols-3 gap-x-7">
             {data?.restaurant.restaurant?.menu.map((menu, index) => (

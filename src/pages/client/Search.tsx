@@ -69,10 +69,7 @@ const ClientSearch: React.FC = () => {
       <header className="bg-gray-200 w-screen py-10 text-center">
         <h4 className="text-3xl">{ query } / {`${data?.searchRestaurant.totalResults} Restaurants`}</h4>
       </header>
-      <Article
-        title={`Search`}
-        loading={loading}
-      >
+      <Article loading={loading}>
         <div className="grid md:grid-cols-3 gap-x-5 gap-y-10 pb-10 mt-10 mb-10">
           {itemList.map(restaurant => (
             <Restaurant

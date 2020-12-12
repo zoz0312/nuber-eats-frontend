@@ -64,6 +64,9 @@ const ClientCategory: React.FC = () => {
 
   return (
     <section className="max-w-screen">
+      <Helmet>
+        {`${data?.category.category?.name} | Nuber Eats`}
+      </Helmet>
       <header
         className="bg-gray-800 py-40 w-full items-center"
       >
@@ -74,10 +77,7 @@ const ClientCategory: React.FC = () => {
           <h4 className="text-3xl">{ data?.category.category?.name }</h4>
         </div>
       </header>
-      <Article
-        title={`${data?.category.category?.name}`}
-        loading={loading}
-      >
+      <Article loading={loading}>
         <h3 className="text-2xl font-medium">{`${data?.category.totalResults} Restaurants`}</h3>
         <div className="grid md:grid-cols-3 gap-x-5 gap-y-10 pb-10 mt-10 mb-10">
           {itemList.map((restaurant, index) => (
