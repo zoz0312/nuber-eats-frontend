@@ -115,7 +115,9 @@ const AddDish: React.FC = () => {
   }
 
   const onDeleteChoiceClick = (optionId: number, choiceId: number) => {
-    setChoices(current => current.filter(choice => choice.optionId === optionId && choice.id !== choiceId));
+    setChoices(current => current.filter(choice => {
+      return choice.id !== choiceId
+    }));
 
     setValue(`choiceName-${optionId}-${choiceId}`, '');
     setValue(`choiceExtra-${optionId}-${choiceId}`, '0');
@@ -164,9 +166,8 @@ const AddDish: React.FC = () => {
           >
             {options.length !== 0 &&
               options.map((id) => (
-              <>
+              <div key={id}>
                 <div
-                  key={id}
                   className="mt-5 flex flex-row justify-center items-center"
                 >
                   <input
@@ -232,7 +233,7 @@ const AddDish: React.FC = () => {
                       </div>
                     ))
                   )}
-              </>))
+              </div>))
             }
           </div>
           <div className="text-center">
