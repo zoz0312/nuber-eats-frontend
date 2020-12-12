@@ -6,6 +6,7 @@ import { RESTUARANT_FRAGMENT } from '../../fragments';
 import { searchRestaurant, searchRestaurantVariables, searchRestaurant_searchRestaurant_restaurants } from '../../__generated__/searchRestaurant';
 import Restaurant from '../../components/Restaurant';
 import useScrollPage from '../../hooks/useScrollPage';
+import Article from '../../components/Article';
 
 export const SEARCH_RESTAURANT = gql`
   query searchRestaurant($input: SearchRestaurantInput!) {
@@ -68,7 +69,10 @@ const ClientSearch: React.FC = () => {
       <header className="bg-gray-200 w-screen py-10 text-center">
         <h4 className="text-3xl">{ query } / {`${data?.searchRestaurant.totalResults} Restaurants`}</h4>
       </header>
-      <article className="common-article">
+      <Article
+        title={`Search`}
+        loading={loading}
+      >
         <div className="grid md:grid-cols-3 gap-x-5 gap-y-10 pb-10 mt-10 mb-10">
           {itemList.map(restaurant => (
             <Restaurant
@@ -80,7 +84,7 @@ const ClientSearch: React.FC = () => {
             />
           ))}
         </div>
-      </article>
+      </Article>
     </div>
   );
 }

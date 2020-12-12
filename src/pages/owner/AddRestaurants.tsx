@@ -24,11 +24,30 @@ interface IFormProps {
 }
 
 const AddRestaurant: React.FC = () => {
+  // const client = useApolloClient();
+
+  const history = useHistory();
   const [uploading, setUploading] = useState(false);
   const onCompleted = (data: createRestaurant) => {
     const { createRestaurant: { ok } } = data;
     if (ok) {
       setUploading(false);
+
+      // cache 최적화
+      // useEffect(() => {
+      //   const queryResult = client.readQuery({
+      //     query: MY_RESTAURANTS_QUERY
+      //   });
+      //   client.writeQuery({
+      //     query: MY_RESTAURANTS_QUERY,
+      //     data: {
+      //       ...queryResult.myRestaurants,
+      //       restaurants: [1,2,3,4,5,6]
+      //     }
+      //   })
+      //   console.log('queryResult', queryResult);
+      // }, []);
+      // history.push('/');
     }
   };
 
@@ -36,8 +55,9 @@ const AddRestaurant: React.FC = () => {
     createRestaurant,
     createRestaurantVariables
   >(CREATE_RESTAURANT_MUTATION, {
-    onCompleted
+    onCompleted,
   });
+  // refetchQueries: [{ query: MY_RESTAURANTS_QUERY }]
 
   const {
     register,
@@ -63,7 +83,6 @@ const AddRestaurant: React.FC = () => {
           body: formBody
         })
       ).json();
-      console.log(coverImage);
       createRestaurantMutation({
         variables: {
           input: {
@@ -75,7 +94,7 @@ const AddRestaurant: React.FC = () => {
         }
       });
     } catch (e) {
-
+      console.log('e', e)
     }
   };
 

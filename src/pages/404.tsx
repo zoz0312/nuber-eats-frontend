@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 
 export const NotFound = () => <>
-  <div className="h-screen flex flex-col items-center justify-center">
+  <div className="mt-20 flex flex-col items-center justify-center">
     <Helmet>
       <title>Not Found | Number Eats</title>
     </Helmet>

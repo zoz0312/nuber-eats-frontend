@@ -6,6 +6,7 @@ import { category, categoryVariables, category_category_category_restaurants } f
 import { Helmet } from 'react-helmet';
 import Restaurant from '../../components/Restaurant';
 import useScrollPage from '../../hooks/useScrollPage';
+import Article from '../../components/Article';
 
 export const CATEGORY_QUERY = gql`
   query category($input: CategoryInput!) {
@@ -63,9 +64,6 @@ const ClientCategory: React.FC = () => {
 
   return (
     <section className="max-w-screen">
-      <Helmet>
-        <title>{`${data?.category.category?.name} | Nuber Eats`}</title>
-      </Helmet>
       <header
         className="bg-gray-800 py-40 w-full items-center"
       >
@@ -76,7 +74,10 @@ const ClientCategory: React.FC = () => {
           <h4 className="text-3xl">{ data?.category.category?.name }</h4>
         </div>
       </header>
-      <article className="common-article">
+      <Article
+        title={`${data?.category.category?.name}`}
+        loading={loading}
+      >
         <h3 className="text-2xl font-medium">{`${data?.category.totalResults} Restaurants`}</h3>
         <div className="grid md:grid-cols-3 gap-x-5 gap-y-10 pb-10 mt-10 mb-10">
           {itemList.map((restaurant, index) => (
@@ -92,7 +93,7 @@ const ClientCategory: React.FC = () => {
         {page < (data?.category.totalPages || 0) && (
           <div className="text-3xl text-center mb-10">Loading...</div>
         )}
-      </article>
+      </Article>
     </section>
   );
 }

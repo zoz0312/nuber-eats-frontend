@@ -6,6 +6,7 @@ import useScrollPage from './../../hooks/useScrollPage';
 import { Helmet } from 'react-helmet-async';
 import Restaurant from './../../components/Restaurant';
 import { Link } from 'react-router-dom';
+import Article from '../../components/Article';
 
 const MY_RESTAURANTS_QUERY = gql`
   query myRestaurants($input: MyRestaurantsInput!) {
@@ -25,7 +26,7 @@ const MY_RESTAURANTS_QUERY = gql`
 const MyRestaurants: React.FC = () => {
   const { page, setTotalPages } = useScrollPage(1);
   const [itemList, setItemList] = useState<myRestaurants_myRestaurants_restaurants[]>([]);
-  const { data } = useQuery<myRestaurants>(MY_RESTAURANTS_QUERY, {
+  const { data, loading } = useQuery<myRestaurants>(MY_RESTAURANTS_QUERY, {
     variables: {
       input: {
         page,
@@ -47,13 +48,15 @@ const MyRestaurants: React.FC = () => {
     }
   }, [data]);
 
-  console.log('itemList', itemList)
   return (
     <div>
       <Helmet>
         <title>My Restaurants | Nuber Eats</title>
       </Helmet>
-      <article className="common-article">
+      <Article
+        title={`My Restaurants`}
+        loading={loading}
+      >
         <h2 className="text-4xl mb-10">My Restaurants</h2>
         { itemList.length === 0 ? (
           <>
@@ -78,7 +81,7 @@ const MyRestaurants: React.FC = () => {
             ))}
           </div>
         )}
-      </article>
+      </Article>
     </div>
   )
 };
