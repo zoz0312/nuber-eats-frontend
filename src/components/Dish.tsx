@@ -13,7 +13,7 @@ interface IDishProps {
   };
   isCustomer?: boolean;
   orderStarted?: boolean;
-  orderItemHandle?: (dishId: number) => void;
+  orderItemHandle?: (dishId: number, dishPrice: number) => void;
   optionItemHandle?: (dishId: number, option: any) => void;
   isOptionSelected?: (dishId: number, optionName: string) => boolean;
   choiceItemHandle?: Function;
@@ -35,7 +35,7 @@ const Dish: React.FC<IDishProps> = ({
 
   const onClick = () => {
     if (isCustomer && orderStarted && orderItemHandle) {
-      orderItemHandle(menu.id);
+      orderItemHandle(menu.id, menu.price);
     }
   };
 

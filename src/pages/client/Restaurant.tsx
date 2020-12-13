@@ -66,11 +66,33 @@ const ClientRestaurant: React.FC = () => {
   });
 
   const [isOrderStarted, setIsOrderStarted] = useState(false);
+  const [selectPrice, setSelectPrice] = useState(0);
   const [orderItems, setOrderItems] = useState<CreateOrderItemInput[]>([]);
   const [optionChoices, setOptionChoices] = useState<IOptionChoice[]>([]);
+
   const extras = useMemo(() => {
-    // calcuated extra
-  }, [orderItems, optionChoices])
+    let extra = 0;
+    extra += selectPrice;
+    extra += orderItems.reduce((prev, item) => {
+      if (!item.options) {
+        return prev;
+      }
+      const optionExtra = item.options.reduce((optionPrev, option) => (
+        option.extra ?
+        optionPrev + option.extra :
+        optionPrev
+      ), 0);
+      return prev + optionExtra;
+    }, 0);
+    extra += optionChoices.reduce((prev, item) => {
+      if (item.choice.extra) {
+        return prev + item.choice.extra;
+      }
+      return prev;
+    }, 0);
+    return extra;
+  }, [selectPrice, orderItems, optionChoices]);
+
   const triggerStartOrder = () => {
     setIsOrderStarted(true);
   };
@@ -103,10 +125,12 @@ const ClientRestaurant: React.FC = () => {
     );
   };
 
-  const orderItemHandle = (dishId: number) => {
+  const orderItemHandle = (dishId: number, dishPrice: number) => {
     if (isSelected(dishId)) {
+      setSelectPrice(prev => prev - dishPrice);
       removeOrederItem(dishId);
     } else {
+      setSelectPrice(prev => prev + dishPrice);
       addOrderItem(dishId);
     }
   };
@@ -242,7 +266,7 @@ const ClientRestaurant: React.FC = () => {
   const onCompleted = (data: createOrder) => {
     const { createOrder: { ok, orderId } } = data;
     if (ok) {
-      history.push(`/orders/${orderId}`);
+      // history.push(`/orders/${orderId}`);
     }
   };
 
@@ -253,8 +277,6 @@ const ClientRestaurant: React.FC = () => {
     onCompleted
   });
 
-  console.log('orderItems', orderItems);
-
   const triggerConfirmOrder = () => {
     if (orderItems.length === 0) {
       alert('주문할 항목을 선택해주세요!');
@@ -264,43 +286,52 @@ const ClientRestaurant: React.FC = () => {
     }
 
     let items: CreateOrderItemInput[] = [];
-    if (optionChoices.length !== 0) {
-      items = orderItems.map(item => {
-        if (item.options) {
-          item.options = item.options.map(option => {
-            const [userChoice] = optionChoices.filter(choice => {
-              return (
-                item.dishId === choice.id &&
-                option.name === choice.optionName
-              )
-            });
-
-            if (userChoice === undefined) {
-              return option;
-            }
-
-            return {
-              ...option,
-              choice: userChoice.choice.name,
-            };
+    items = orderItems.map(item => {
+      if (item.options) {
+        item.options = item.options.map(option => {
+          const [userChoice] = optionChoices.filter(choice => {
+            return (
+              item.dishId === choice.id &&
+              option.name === choice.optionName
+            )
           });
+
+          if (userChoice === undefined) {
+            return option;
+          }
+
+          let extra = 0;
+
+          if (option.extra) {
+            extra += option.extra;
+          }
+
+          if (userChoice.choice.extra) {
+            extra += userChoice.choice.extra;
+          }
+
+          return {
+            ...option,
+            choice: userChoice.choice.name,
+            extra,
+          };
+        });
+      }
+
+      return item;
+    });
+
+    const ok = window.confirm('정말 주문 하시겠습니까?');
+    if (ok) {
+      makeOrderMutation({
+        variables: {
+          input: {
+            restaurantId: +params.id,
+            items,
+          }
         }
-
-        return item;
-      })
+      });
     }
-
-    // const ok = window.confirm('정말 주문 하시겠습니까?');
-    // if (ok) {
-    //   makeOrderMutation({
-    //     variables: {
-    //       input: {
-    //         restaurantId: +params.id,
-    //         items,
-    //       }
-    //     }
-    //   });
-    // }
   }
 
   return (
@@ -330,6 +361,9 @@ const ClientRestaurant: React.FC = () => {
                 </button>
               )}
               { isOrderStarted && (<>
+                <h5 className="mr-10 text-xl">
+                  총 결재금액<br />$ { extras }
+                </h5>
                 <button type="button" className="btn my-5 mr-3" onClick={triggerConfirmOrder}>
                   결재하기
                 </button>
