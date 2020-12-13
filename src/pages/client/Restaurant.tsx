@@ -1,6 +1,6 @@
-import { gql, useQuery } from '@apollo/client';
+import { gql, useQuery, useMutation } from '@apollo/client';
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { RESTUARANT_FRAGMENT } from '../../fragments';
 import { restaurant, restaurantVariables } from '../../__generated__/restaurant';
 import { Helmet } from 'react-helmet';
@@ -33,6 +33,7 @@ export const CREATE_ORDER_MUTATION = gql`
     createOrder(input: $input) {
       ok
       error
+      orderId
     }
   }
 `;
@@ -51,6 +52,7 @@ interface IOptionChoice {
 };
 
 const ClientRestaurant: React.FC = () => {
+  const history = useHistory();
   const params = useParams<IRestaruantParams>();
   const { loading, data } = useQuery<
     restaurant,
@@ -72,7 +74,7 @@ const ClientRestaurant: React.FC = () => {
 
   const isSelected = (dishId: number) => {
     return Boolean(getItem(dishId));
-  }
+  };
 
   const getItem = (dishId: number) => {
     return orderItems.find(order => order.dishId === dishId);
@@ -89,6 +91,11 @@ const ClientRestaurant: React.FC = () => {
     setOrderItems(current =>
       current.filter(dish =>
         dish.dishId !== dishId
+      )
+    );
+    setOptionChoices(current =>
+      current.filter(item =>
+        item.id !== dishId
       )
     );
   };
@@ -148,7 +155,7 @@ const ClientRestaurant: React.FC = () => {
 
   const getOptionFromItem = (item: CreateOrderItemInput, optionName: string) => {
     return item.options?.find(option => option.name === optionName);
-  }
+  };
 
   const isOptionSelected = (dishId: number, optionName: string) => {
     const item = getItem(dishId);
@@ -156,7 +163,7 @@ const ClientRestaurant: React.FC = () => {
       return Boolean(getOptionFromItem(item, optionName))
     }
     return false;
-  }
+  };
 
   const getChoice = (
     dishId: number,
@@ -221,10 +228,49 @@ const ClientRestaurant: React.FC = () => {
       return Boolean(isChoice);
     }
     return false;
-  }
+  };
 
-  // console.log('orderItems', orderItems)
-  // console.log('optionChoices', optionChoices)
+  const triggerCancleOrder = () => {
+    setIsOrderStarted(false);
+    setOrderItems([]);
+    setOptionChoices([]);
+  };
+
+  const onCompleted = (data: createOrder) => {
+    const { createOrder: { ok, orderId } } = data;
+    if (ok) {
+      history.push(`/orders/${orderId}`);
+    }
+  };
+
+  const [makeOrderMutation, { loading: placingOrder }] = useMutation<
+    createOrder,
+    createOrderVariables
+  >(CREATE_ORDER_MUTATION, {
+    onCompleted
+  });
+
+  const triggerConfirmOrder = () => {
+    if (orderItems.length === 0) {
+      alert('주문할 항목을 선택해주세요!');
+      return;
+    } else {
+      // option -> choice cheking
+      makeOrderMutation({
+        variables: {
+          input: {
+            restaurantId: +params.id,
+            items: orderItems,
+          }
+        }
+      });
+    }
+
+    const ok = window.confirm('정말 주문 하시겠습니까?');
+    if (ok) {
+      // mutation
+    }
+  }
 
   return (
     <div>
@@ -244,9 +290,23 @@ const ClientRestaurant: React.FC = () => {
       <Article loading={loading}>
         { data?.restaurant.restaurant?.menu.length !== 0 ? (
           <div className="flex flex-col items-end pb-32">
-            <button type="button" className="btn my-5" onClick={triggerStartOrder}>
-              { isOrderStarted ? '장바구니 담는중..' : '주문하기' }
-            </button>
+            <div
+              className="flex items-center"
+            >
+              { !isOrderStarted && (
+                <button type="button" className="btn my-5" onClick={triggerStartOrder}>
+                  주문하기
+                </button>
+              )}
+              { isOrderStarted && (<>
+                <button type="button" className="btn my-5 mr-3" onClick={triggerConfirmOrder}>
+                  결재하기
+                </button>
+                <button type="button" className="btn-black my-5" onClick={triggerCancleOrder}>
+                  주문취소
+                </button>
+              </>)}
+            </div>
             <div className="grid md:grid-cols-3 gap-x-7 gap-y-4 w-full">
               {data?.restaurant.restaurant?.menu.map((menu, index) => (
                 <Dish
