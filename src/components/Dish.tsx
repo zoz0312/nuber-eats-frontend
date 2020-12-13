@@ -11,16 +11,26 @@ interface IDishProps {
     options: restaurant_restaurant_restaurant_menu_options[] | null;
   };
   isCustomer?: boolean;
+  orderStarted?: boolean;
+  orderItemHandle?: (dishId: number) => void;
+  isSelected?: boolean;
 }
 
 const Dish: React.FC<IDishProps> = ({
   menu,
   isCustomer = false,
+  orderStarted = false,
+  orderItemHandle,
+  isSelected = false,
 }) => {
-  console.log('menu.options', menu.options)
   return (
     <div
-      className="flex flex-row justify-between border-2 border-gray-300 hover:border-gray-500 transition-colors cursor-pointer"
+      onClick={() => (isCustomer && orderStarted && orderItemHandle) ? orderItemHandle(menu.id) : null}
+      className={`flex flex-row justify-between border-2 transition-colors cursor-pointer ${
+        isSelected ?
+        'border-lime-600 hover:border-lime-700 ' :
+        'border-gray-300 hover:border-gray-500 '
+      }`}
     >
       <div className="flex flex-col justify-top p-3">
         {isCustomer ? (
@@ -33,22 +43,22 @@ const Dish: React.FC<IDishProps> = ({
               <div className="text-gray-600 text-xs mt-2">
                 <h5 className="my-3 font-medium">Dish Options</h5>
                 {menu.options?.map((option, index) => (
-                  <>
+                  <div key={index}>
                     <div key={index} className="flex items-end justify-items-center mt-2">
                       <h6 className="font-medium mr-1 text-black text-lg">{option.name}</h6>
                       <h6 className="mr-2">(${option.extra})</h6>
                     </div>
                     {option.choices !== null &&
                       <div className="flex items-center flex-col mt-1 ml-2">
-                        {option.choices?.map(choice => (
-                          <div className="flex">
+                        {option.choices?.map((choice, choiceIndex) => (
+                          <div key={choiceIndex} className="flex">
                             <h6 className="mr-1" style={{fontSize: `1rem`}}>{choice.name}</h6>
                             <h6 className="mr-2">(${choice.extra})</h6>
                           </div>
                         ))}
                       </div>
                     }
-                  </>
+                  </div>
                 ))}
               </div>
             )}

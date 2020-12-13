@@ -1,5 +1,5 @@
 import { gql, useQuery } from '@apollo/client';
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { RESTUARANT_FRAGMENT } from '../../fragments';
 import { restaurant, restaurantVariables } from '../../__generated__/restaurant';
@@ -7,6 +7,8 @@ import { Helmet } from 'react-helmet';
 import Dish from '../../components/Dish';
 import Article from '../../components/Article';
 import { DISH_FRAGMENT } from './../../fragments';
+import { createOrder, createOrderVariables } from './../../__generated__/createOrder';
+import { CreateOrderItemInput } from '../../__generated__/globalTypes';
 
 export const RESTAURANT_QUERY = gql`
   query restaurant($input: RestaurantInput!) {
@@ -25,9 +27,18 @@ export const RESTAURANT_QUERY = gql`
   ${DISH_FRAGMENT}
 `;
 
+export const CREATE_ORDER_MUTATION = gql`
+  mutation createOrder($input: CreateOrderInput!) {
+    createOrder(input: $input) {
+      ok
+      error
+    }
+  }
+`;
+
 interface IRestaruantParams {
   id: string;
-}
+};
 
 const ClientRestaurant: React.FC = () => {
   const params = useParams<IRestaruantParams>();
@@ -42,7 +53,30 @@ const ClientRestaurant: React.FC = () => {
     }
   });
 
-  console.log('data',data)
+  const [isOrderStarted, setIsOrderStarted] = useState(false);
+  const [orderItems, setOrderItems] = useState<CreateOrderItemInput[]>([]);
+  const triggerStartOrder = () => {
+    setIsOrderStarted(true);
+  };
+
+  const isSelected = (dishId: number) => {
+    return Boolean(orderItems.find(order => order.dishId === dishId));
+  }
+
+  const orderItemHandle = (dishId: number) => {
+    if (isSelected(dishId)) {
+      setOrderItems(current =>
+        current.filter(dish =>
+          dish.dishId !== dishId
+        )
+      );
+    } else {
+      setOrderItems(current => [
+        { dishId },
+        ...current
+      ])
+    }
+  };
 
   return (
     <div>
@@ -61,10 +95,22 @@ const ClientRestaurant: React.FC = () => {
       </header>
       <Article loading={loading}>
         { data?.restaurant.restaurant?.menu.length !== 0 ? (
-          <div className="grid md:grid-cols-3 gap-x-7 gap-y-4">
-            {data?.restaurant.restaurant?.menu.map((menu, index) => (
-              <Dish key={index} menu={menu} isCustomer={true} />
-            ))}
+          <div className="flex flex-col items-end pb-32">
+            <button type="button" className="btn my-5" onClick={triggerStartOrder}>
+              { isOrderStarted ? '장바구니 담는중..' : '주문하기' }
+            </button>
+            <div className="grid md:grid-cols-3 gap-x-7 gap-y-4 w-full">
+              {data?.restaurant.restaurant?.menu.map((menu, index) => (
+                <Dish
+                  key={index}
+                  isSelected={isSelected(menu.id)}
+                  menu={menu}
+                  isCustomer={true}
+                  orderStarted={isOrderStarted}
+                  orderItemHandle={orderItemHandle}
+                />
+              ))}
+            </div>
           </div>
         ) : (
           <div className="text-center text-2xl">메뉴가 없습니다.</div>
