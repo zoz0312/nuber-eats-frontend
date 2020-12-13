@@ -32,6 +32,11 @@ export interface CreateDishInput {
   restaurantId: number;
 }
 
+export interface CreatePaymentInput {
+  transactionId: number;
+  restaurantId: number;
+}
+
 export interface CreateRestaurantInput {
   name: string;
   coverImage: string;

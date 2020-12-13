@@ -1,5 +1,5 @@
 import React from 'react';
-import { gql, useQuery } from '@apollo/client';
+import { gql, useQuery, useMutation } from '@apollo/client';
 import { Link, useParams } from 'react-router-dom';
 import { RESTUARANT_FRAGMENT, DISH_FRAGMENT, ORDERS_FRAGMENT } from './../../fragments';
 import { myRestaurant, myRestaurantVariables } from './../../__generated__/myRestaurant';
@@ -7,6 +7,7 @@ import { Helmet } from 'react-helmet-async';
 import Article from '../../components/Article';
 import Dish from './../../components/Dish';
 import { VictoryChart, VictoryBar, VictoryAxis, VictoryVoronoiContainer, VictoryLine, VictoryZoomContainer, VictoryTheme, VictoryLabel } from 'victory';
+import { createPayment, createPaymentVariables } from './../../__generated__/createPayment';
 
 export const MY_RESTAURANT_QUERY = gql`
   query myRestaurant($input: MyRestaurantInput!) {
@@ -29,6 +30,15 @@ export const MY_RESTAURANT_QUERY = gql`
   ${ORDERS_FRAGMENT}
 `;
 
+const CREATE_PAYMENT_MUTATION = gql`
+  mutation createPayment($input: CreatePaymentInput!) {
+    createPayment(input: $input) {
+      ok
+      error
+    }
+  }
+`;
+
 interface IParams {
   id: string;
 }
@@ -46,7 +56,34 @@ const MyRestaurant: React.FC = () => {
     }
   });
 
-  console.log('data', data)
+  const onCompleted = (data: createPayment) => {
+    if (data.createPayment) {
+      alert('Your restaurant is being promoted!');
+    }
+  }
+
+  const [createPaymentMutation, { loading: paymentLoading }] = useMutation<
+    createPayment,
+    createPaymentVariables
+  >(CREATE_PAYMENT_MUTATION, {
+    onCompleted
+  });
+
+  const triggerPaddle = () => {
+    // TODO: paddle Payment
+    const paddleSampleData = {
+      checkout: { id: 1 }
+    };
+
+    createPaymentMutation({
+      variables: {
+        input: {
+          transactionId: paddleSampleData.checkout.id,
+          restaurantId: +id,
+        }
+      }
+    });
+  };
 
   return (
     <div>
@@ -67,14 +104,26 @@ const MyRestaurant: React.FC = () => {
           {data?.myRestaurant.restaurant?.name}
         </div>
         <div className="my-3">
-          <Link
-            to={`/restaurant/${id}/add-dish`}
-            className="mr-8 text-white bg-gray-800 py-3 px-10"
-          >Add Dish &rarr;</Link>
-          <Link
-            to={``}
-            className="text-white bg-lime-700 py-3 px-10"
-          >Buy Promition &rarr;</Link>
+            <button
+              type="button"
+              onClick={triggerPaddle}
+              className="mr-8 text-white bg-gray-800 py-3 px-10"
+            >
+              <Link
+                to={`/restaurant/${id}/add-dish`}
+              >Add Dish &rarr;</Link>
+            </button>
+          { data?.myRestaurant.restaurant?.isPromoted ? (
+            <div className="inline-block text-lime-700">Is Already Promotted!</div>
+          ) : (
+            <button
+              type="button"
+              onClick={triggerPaddle}
+              className="text-white bg-lime-700 py-3 px-10"
+            >
+              Buy Promition &rarr;
+            </button>
+          )}
         </div>
         <div className="mt-10">
           {data?.myRestaurant.restaurant?.menu.length === 0 ? (
