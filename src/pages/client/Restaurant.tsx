@@ -6,6 +6,7 @@ import { restaurant, restaurantVariables } from '../../__generated__/restaurant'
 import { Helmet } from 'react-helmet';
 import Dish from '../../components/Dish';
 import Article from '../../components/Article';
+import { DISH_FRAGMENT } from './../../fragments';
 
 export const RESTAURANT_QUERY = gql`
   query restaurant($input: RestaurantInput!) {
@@ -15,19 +16,13 @@ export const RESTAURANT_QUERY = gql`
       restaurant {
         ...RestaurantParts
         menu {
-          id
-          name
-          price
-          photo
-          description
-          options {
-            name
-          }
+          ...DishParts
         }
       }
     }
   }
   ${RESTUARANT_FRAGMENT}
+  ${DISH_FRAGMENT}
 `;
 
 interface IRestaruantParams {
@@ -47,6 +42,7 @@ const ClientRestaurant: React.FC = () => {
     }
   });
 
+  console.log('data',data)
 
   return (
     <div>
@@ -67,7 +63,7 @@ const ClientRestaurant: React.FC = () => {
         { data?.restaurant.restaurant?.menu.length !== 0 ? (
           <div className="grid md:grid-cols-3 gap-x-7 gap-y-4">
             {data?.restaurant.restaurant?.menu.map((menu, index) => (
-              <Dish key={index} menu={menu} />
+              <Dish key={index} menu={menu} isCustomer={true} />
             ))}
           </div>
         ) : (

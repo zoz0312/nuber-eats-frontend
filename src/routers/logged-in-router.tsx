@@ -23,7 +23,7 @@ const clientRoutes = [
   { path: '/', component: ClientRestaurants },
   { path: '/search', component: ClientSearch },
   { path: '/category/:slug', component: ClientCategory },
-  { path: 'restaurant/:id/', component: ClientRestaurant },
+  { path: '/restaurant/:id/', component: ClientRestaurant },
 ];
 const restaurantRoutes = [
   { path: '/', component: MyRestaurants },
