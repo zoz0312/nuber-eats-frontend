@@ -1,11 +1,12 @@
 import React from 'react';
 import { gql, useQuery } from '@apollo/client';
 import { Link, useParams } from 'react-router-dom';
-import { RESTUARANT_FRAGMENT, DISH_FRAGMENT } from './../../fragments';
+import { RESTUARANT_FRAGMENT, DISH_FRAGMENT, ORDERS_FRAGMENT } from './../../fragments';
 import { myRestaurant, myRestaurantVariables } from './../../__generated__/myRestaurant';
 import { Helmet } from 'react-helmet-async';
 import Article from '../../components/Article';
 import Dish from './../../components/Dish';
+import { VictoryChart, VictoryBar, VictoryAxis, VictoryVoronoiContainer, VictoryLine, VictoryZoomContainer, VictoryTheme, VictoryLabel } from 'victory';
 
 export const MY_RESTAURANT_QUERY = gql`
   query myRestaurant($input: MyRestaurantInput!) {
@@ -17,11 +18,15 @@ export const MY_RESTAURANT_QUERY = gql`
         menu {
           ...DishParts
         }
+        orders {
+          ...OrderParts
+        }
       }
     }
   }
   ${RESTUARANT_FRAGMENT}
   ${DISH_FRAGMENT}
+  ${ORDERS_FRAGMENT}
 `;
 
 interface IParams {
@@ -34,12 +39,14 @@ const MyRestaurant: React.FC = () => {
     myRestaurant,
     myRestaurantVariables
   >(MY_RESTAURANT_QUERY, {
-    variables: {
-      input: {
+      variables: {
+        input: {
         id: +id,
       }
     }
   });
+
+  console.log('data', data)
 
   return (
     <div>
@@ -82,8 +89,53 @@ const MyRestaurant: React.FC = () => {
         </div>
         <div className="mt-20">
           <h4 className="text-center text-xl font-medium">Sales</h4>
-          <div className="max-w-sm w-full ">
-
+          <div className="pb-20">
+            <VictoryChart
+              width={window.innerWidth}
+              height={500}
+              theme={VictoryTheme.material}
+              containerComponent={<VictoryVoronoiContainer />}
+            >
+              <VictoryLine
+                data={data?.myRestaurant.restaurant?.orders.map(order => ({
+                  x: order.createdAt,
+                  y: order.total,
+                }))}
+                interpolation="linear"
+                style={{
+                  data: {
+                    stroke: 'green',
+                    strokeWidth: 5,
+                  }
+                }}
+                labels={({ datum }) => `${datum.y} $`}
+                labelComponent={
+                  <VictoryLabel
+                    style={{ fontSize: 17 }}
+                    renderInPortal
+                    dy={-20}
+                  />}
+              />
+              <VictoryAxis
+                style={{tickLabels: {
+                  fontSize: 20,
+                  fill: "#4D7C0F",
+                }}}
+                dependentAxis
+                tickFormat={tick => (
+                  `${tick} $`
+                )}
+              />
+              <VictoryAxis
+                style={{tickLabels:{
+                  fontSize: 15,
+                }}}
+                label="Days"
+                tickFormat={tick => (
+                  new Date(tick).toLocaleDateString('ko')
+                )}
+              />
+            </VictoryChart>
           </div>
         </div>
       </Article>
