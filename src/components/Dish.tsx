@@ -1,5 +1,6 @@
 import React from 'react';
 import { restaurant_restaurant_restaurant_menu_options } from './../__generated__/restaurant';
+import DishOption from './DishOption';
 
 interface IDishProps {
   menu: {
@@ -14,6 +15,9 @@ interface IDishProps {
   orderStarted?: boolean;
   orderItemHandle?: (dishId: number) => void;
   optionItemHandle?: (dishId: number, option: any) => void;
+  isOptionSelected?: (dishId: number, optionName: string) => boolean;
+  choiceItemHandle?: Function;
+  isChoiceSelected?: Function;
   isSelected?: boolean;
 }
 
@@ -23,18 +27,15 @@ const Dish: React.FC<IDishProps> = ({
   orderStarted = false,
   orderItemHandle,
   optionItemHandle,
+  isOptionSelected,
+  choiceItemHandle,
+  isChoiceSelected,
   isSelected = false,
 }) => {
 
   const onClick = () => {
     if (isCustomer && orderStarted && orderItemHandle) {
       orderItemHandle(menu.id);
-    }
-  };
-
-  const onOptionClick = () => {
-    if (optionItemHandle) {
-
     }
   };
 
@@ -55,7 +56,7 @@ const Dish: React.FC<IDishProps> = ({
                 { orderStarted && (
                   <button
                     type="button"
-                    className={`ml-2 transition-colors p-2 focus:outline-none text-sm ${isSelected ? 'bg-gray-300' : 'bg-lime-500'}`}
+                    className={`ml-2 p-2 focus:outline-none text-sm ${isSelected ? 'bg-gray-300' : 'bg-lime-500'}`}
                     onClick={onClick}
                   >{ isSelected ? '해제' : '선택' }</button>
                 )}
@@ -65,31 +66,23 @@ const Dish: React.FC<IDishProps> = ({
             { menu.options !== null && (
               <div className="text-gray-600 text-xs mt-2">
                 <h5 className="my-3 font-medium">Dish Options</h5>
-                {menu.options?.map((option, index) => (
-                  <div
-                    key={index}
-                    onClick={
-                      () => optionItemHandle ?
+                { optionItemHandle && isOptionSelected && choiceItemHandle && isChoiceSelected && menu.options?.map((option, index) => (
+                  <div key={index}>
+                    <DishOption
+                      isSelected={isOptionSelected(menu.id, option.name)}
+                      id={menu.id}
+                      name={option.name}
+                      extra={option.extra}
+                      onClick={() =>
                         optionItemHandle(menu.id, {
                           name: option.name,
                           extra: option.extra,
-                        }) : null
-                    }
-                  >
-                    <div key={index} className="flex items-end justify-items-center mt-2">
-                      <h6 className="font-medium mr-1 text-black text-lg">{option.name}</h6>
-                      <h6 className="mr-2">(${option.extra})</h6>
-                    </div>
-                    {option.choices !== null &&
-                      <div className="flex items-center flex-col mt-1 ml-2">
-                        {option.choices?.map((choice, choiceIndex) => (
-                          <div key={choiceIndex} className="flex">
-                            <h6 className="mr-1" style={{fontSize: `1rem`}}>{choice.name}</h6>
-                            <h6 className="mr-2">(${choice.extra})</h6>
-                          </div>
-                        ))}
-                      </div>
-                    }
+                        })
+                      }
+                      choices={option.choices}
+                      choiceItemHandle={choiceItemHandle}
+                      isChoiceSelected={isChoiceSelected}
+                    />
                   </div>
                 ))}
               </div>

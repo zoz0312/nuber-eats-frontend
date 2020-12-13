@@ -21,3 +21,7 @@
 .btn {
   @apply text-lg text-white py-3 px-3 transition-colors focus:outline-none bg-lime-600 hover:bg-lime-700;
 }
+
+.btn-dish {
+  @apply text-white transition-colors focus:outline-none;
+}

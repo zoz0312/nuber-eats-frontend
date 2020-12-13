@@ -41,6 +41,15 @@ interface IRestaruantParams {
   id: string;
 };
 
+interface IOptionChoice {
+  id: number;
+  optionName: string;
+  choice: {
+    name: string;
+    extra?: number | null;
+  }
+};
+
 const ClientRestaurant: React.FC = () => {
   const params = useParams<IRestaruantParams>();
   const { loading, data } = useQuery<
@@ -56,6 +65,7 @@ const ClientRestaurant: React.FC = () => {
 
   const [isOrderStarted, setIsOrderStarted] = useState(false);
   const [orderItems, setOrderItems] = useState<CreateOrderItemInput[]>([]);
+  const [optionChoices, setOptionChoices] = useState<IOptionChoice[]>([]);
   const triggerStartOrder = () => {
     setIsOrderStarted(true);
   };
@@ -98,22 +108,123 @@ const ClientRestaurant: React.FC = () => {
     if (!isSelected(dishId)) {
       return;
     }
+
     const oldItem = getItem(dishId);
     if (oldItem) {
+      const hasOption = Boolean(
+        oldItem.options?.find(oldOption => oldOption.name === option.name)
+      );
+
       removeOrederItem(dishId);
-      setOrderItems(current => [
-        {
-          dishId,
-          options: [
-            option,
-            ...oldItem.options!,
-          ]
-        },
-      ]);
+      if (hasOption) {
+        const filteredOptions = oldItem.options?.filter(oldOption => oldOption.name !== option.name);
+        setOrderItems(current => [
+          {
+            dishId,
+            options: filteredOptions,
+          },
+          ...current
+        ]);
+
+        setOptionChoices(current =>
+          current.filter(item =>
+            item.optionName !== option.name
+          )
+        );
+      } else {
+        setOrderItems(current => [
+          {
+            dishId,
+            options: [
+              option,
+              ...oldItem.options!,
+            ]
+          },
+          ...current
+        ]);
+      }
     }
+  };
+
+  const getOptionFromItem = (item: CreateOrderItemInput, optionName: string) => {
+    return item.options?.find(option => option.name === optionName);
   }
 
-  console.log('orderItems', orderItems)
+  const isOptionSelected = (dishId: number, optionName: string) => {
+    const item = getItem(dishId);
+    if (item) {
+      return Boolean(getOptionFromItem(item, optionName))
+    }
+    return false;
+  }
+
+  const getChoice = (
+    dishId: number,
+    optionName: string,
+    choice: { name: string }
+  ) => {
+    return optionChoices.find(item => {
+      return (item.id === dishId
+        && item.optionName === optionName
+        && item.choice.name === choice.name)
+    });
+  };
+
+  const choiceItemHandle = (
+    dishId: number,
+    optionName: string,
+    choice: { name: string, extra?: number }
+  ) => {
+    if (!isSelected(dishId)) {
+      return;
+    }
+
+    const oldItem = getItem(dishId);
+    if (oldItem) {
+      const hasOption = Boolean(
+        oldItem.options?.find(oldOption => oldOption.name === optionName)
+      );
+
+      if (!hasOption) {
+        return;
+      }
+    }
+
+    const isChoice = optionChoices.find(item =>
+      (item.id === dishId && item.optionName === optionName)
+    );
+
+    if (isChoice) {
+      setOptionChoices(current =>
+        current.filter(item =>
+          item.optionName !== optionName
+        )
+      );
+    }
+    setOptionChoices(current => [
+      {
+        id: dishId,
+        optionName,
+        choice: { ...choice }
+      },
+      ...current
+    ]);
+  };
+
+  const isChoiceSelected = (
+    dishId: number,
+    optionName: string,
+    choice: { name: string, extra?: number }
+  ) => {
+    const isChoice = getChoice(dishId, optionName, choice);
+    if (isChoice) {
+      return Boolean(isChoice);
+    }
+    return false;
+  }
+
+  // console.log('orderItems', orderItems)
+  // console.log('optionChoices', optionChoices)
 
   return (
     <div>
@@ -146,6 +257,9 @@ const ClientRestaurant: React.FC = () => {
                   orderStarted={isOrderStarted}
                   orderItemHandle={orderItemHandle}
                   optionItemHandle={optionItemHandle}
+                  isOptionSelected={isOptionSelected}
+                  choiceItemHandle={choiceItemHandle}
+                  isChoiceSelected={isChoiceSelected}
                 />
               ))}
             </div>
