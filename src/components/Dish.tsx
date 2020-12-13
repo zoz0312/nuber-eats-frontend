@@ -13,6 +13,7 @@ interface IDishProps {
   isCustomer?: boolean;
   orderStarted?: boolean;
   orderItemHandle?: (dishId: number) => void;
+  optionItemHandle?: (dishId: number, option: any) => void;
   isSelected?: boolean;
 }
 
@@ -21,11 +22,24 @@ const Dish: React.FC<IDishProps> = ({
   isCustomer = false,
   orderStarted = false,
   orderItemHandle,
+  optionItemHandle,
   isSelected = false,
 }) => {
+
+  const onClick = () => {
+    if (isCustomer && orderStarted && orderItemHandle) {
+      orderItemHandle(menu.id);
+    }
+  };
+
+  const onOptionClick = () => {
+    if (optionItemHandle) {
+
+    }
+  };
+
   return (
     <div
-      onClick={() => (isCustomer && orderStarted && orderItemHandle) ? orderItemHandle(menu.id) : null}
       className={`flex flex-row justify-between border-2 transition-colors cursor-pointer ${
         isSelected ?
         'border-lime-600 hover:border-lime-700 ' :
@@ -36,14 +50,32 @@ const Dish: React.FC<IDishProps> = ({
         {isCustomer ? (
           <>
             <div>
-              <span className="text-xl">{ menu.name }</span>
+              <span className="text-xl">
+                { menu.name }
+                { orderStarted && (
+                  <button
+                    type="button"
+                    className={`ml-2 transition-colors p-2 focus:outline-none text-sm ${isSelected ? 'bg-gray-300' : 'bg-lime-500'}`}
+                    onClick={onClick}
+                  >{ isSelected ? '해제' : '선택' }</button>
+                )}
+              </span>
             </div>
             <span className="text-2xl font-medium">{ `$${menu.price}` }</span>
             { menu.options !== null && (
               <div className="text-gray-600 text-xs mt-2">
                 <h5 className="my-3 font-medium">Dish Options</h5>
                 {menu.options?.map((option, index) => (
-                  <div key={index}>
+                  <div
+                    key={index}
+                    onClick={
+                      () => optionItemHandle ?
+                        optionItemHandle(menu.id, {
+                          name: option.name,
+                          extra: option.extra,
+                        }) : null
+                    }
+                  >
                     <div key={index} className="flex items-end justify-items-center mt-2">
                       <h6 className="font-medium mr-1 text-black text-lg">{option.name}</h6>
                       <h6 className="mr-2">(${option.extra})</h6>

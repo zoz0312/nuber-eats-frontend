@@ -9,6 +9,7 @@ import Article from '../../components/Article';
 import { DISH_FRAGMENT } from './../../fragments';
 import { createOrder, createOrderVariables } from './../../__generated__/createOrder';
 import { CreateOrderItemInput } from '../../__generated__/globalTypes';
+import { restaurant_restaurant_restaurant_menu_options } from './../../__generated__/restaurant';
 
 export const RESTAURANT_QUERY = gql`
   query restaurant($input: RestaurantInput!) {
@@ -60,23 +61,59 @@ const ClientRestaurant: React.FC = () => {
   };
 
   const isSelected = (dishId: number) => {
-    return Boolean(orderItems.find(order => order.dishId === dishId));
+    return Boolean(getItem(dishId));
   }
+
+  const getItem = (dishId: number) => {
+    return orderItems.find(order => order.dishId === dishId);
+  };
+
+  const addOrderItem = (dishId: number) => {
+    setOrderItems(current => [
+      { dishId, options: [] },
+      ...current
+    ]);
+  };
+
+  const removeOrederItem = (dishId: number) => {
+    setOrderItems(current =>
+      current.filter(dish =>
+        dish.dishId !== dishId
+      )
+    );
+  };
 
   const orderItemHandle = (dishId: number) => {
     if (isSelected(dishId)) {
-      setOrderItems(current =>
-        current.filter(dish =>
-          dish.dishId !== dishId
-        )
-      );
+      removeOrederItem(dishId);
     } else {
-      setOrderItems(current => [
-        { dishId },
-        ...current
-      ])
+      addOrderItem(dishId);
     }
   };
+
+  const optionItemHandle = (
+    dishId: number,
+    option: restaurant_restaurant_restaurant_menu_options,
+  ) => {
+    if (!isSelected(dishId)) {
+      return;
+    }
+    const oldItem = getItem(dishId);
+    if (oldItem) {
+      removeOrederItem(dishId);
+      setOrderItems(current => [
+        {
+          dishId,
+          options: [
+            option,
+            ...oldItem.options!,
+          ]
+        },
+      ]);
+    }
+  }
+
+  console.log('orderItems', orderItems)
 
   return (
     <div>
@@ -108,6 +145,7 @@ const ClientRestaurant: React.FC = () => {
                   isCustomer={true}
                   orderStarted={isOrderStarted}
                   orderItemHandle={orderItemHandle}
+                  optionItemHandle={optionItemHandle}
                 />
               ))}
             </div>
