@@ -1,5 +1,5 @@
 import { gql, useQuery, useMutation } from '@apollo/client';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import { RESTUARANT_FRAGMENT } from '../../fragments';
 import { restaurant, restaurantVariables } from '../../__generated__/restaurant';
@@ -68,6 +68,9 @@ const ClientRestaurant: React.FC = () => {
   const [isOrderStarted, setIsOrderStarted] = useState(false);
   const [orderItems, setOrderItems] = useState<CreateOrderItemInput[]>([]);
   const [optionChoices, setOptionChoices] = useState<IOptionChoice[]>([]);
+  const extras = useMemo(() => {
+    // calcuated extra
+  }, [orderItems, optionChoices])
   const triggerStartOrder = () => {
     setIsOrderStarted(true);
   };
@@ -250,26 +253,54 @@ const ClientRestaurant: React.FC = () => {
     onCompleted
   });
 
+  console.log('orderItems', orderItems);
+
   const triggerConfirmOrder = () => {
     if (orderItems.length === 0) {
       alert('주문할 항목을 선택해주세요!');
       return;
     } else {
       // option -> choice cheking
-      makeOrderMutation({
-        variables: {
-          input: {
-            restaurantId: +params.id,
-            items: orderItems,
-          }
-        }
-      });
     }
 
-    const ok = window.confirm('정말 주문 하시겠습니까?');
-    if (ok) {
-      // mutation
+    let items: CreateOrderItemInput[] = [];
+    if (optionChoices.length !== 0) {
+      items = orderItems.map(item => {
+        if (item.options) {
+          item.options = item.options.map(option => {
+            const [userChoice] = optionChoices.filter(choice => {
+              return (
+                item.dishId === choice.id &&
+                option.name === choice.optionName
+              )
+            });
+
+            if (userChoice === undefined) {
+              return option;
+            }
+
+            return {
+              ...option,
+              choice: userChoice.choice.name,
+            };
+          });
+        }
+
+        return item;
+      })
     }
+
+    // const ok = window.confirm('정말 주문 하시겠습니까?');
+    // if (ok) {
+    //   makeOrderMutation({
+    //     variables: {
+    //       input: {
+    //         restaurantId: +params.id,
+    //         items,
+    //       }
+    //     }
+    //   });
+    // }
   }
 
   return (
