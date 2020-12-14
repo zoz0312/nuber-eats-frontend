@@ -7,6 +7,14 @@
 // START Enums and Input Objects
 //==============================================================
 
+export enum OrderStatus {
+  Cooked = "Cooked",
+  Cooking = "Cooking",
+  Delivered = "Delivered",
+  Pending = "Pending",
+  PickedUp = "PickedUp",
+}
+
 export enum UserRole {
   Client = "Client",
   Delivery = "Delivery",
@@ -70,6 +78,10 @@ export interface EditProfileInput {
   password?: string | null;
 }
 
+export interface GetOrderInput {
+  id: number;
+}
+
 export interface MyRestaurantInput {
   id: number;
 }
@@ -82,6 +94,10 @@ export interface OrderItemOptionInputType {
   name: string;
   choice?: string | null;
   extra?: number | null;
+}
+
+export interface OrderUpdatesInput {
+  id: number;
 }
 
 export interface RestaurantInput {

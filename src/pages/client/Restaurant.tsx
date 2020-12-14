@@ -266,7 +266,7 @@ const ClientRestaurant: React.FC = () => {
   const onCompleted = (data: createOrder) => {
     const { createOrder: { ok, orderId } } = data;
     if (ok) {
-      // history.push(`/orders/${orderId}`);
+      history.push(`/orders/${orderId}`);
     }
   };
 
@@ -278,11 +278,13 @@ const ClientRestaurant: React.FC = () => {
   });
 
   const triggerConfirmOrder = () => {
+    if (placingOrder) {
+      return;
+    }
+
     if (orderItems.length === 0) {
       alert('주문할 항목을 선택해주세요!');
       return;
-    } else {
-      // option -> choice cheking
     }
 
     let items: CreateOrderItemInput[] = [];
@@ -337,7 +339,7 @@ const ClientRestaurant: React.FC = () => {
   return (
     <div>
       <Helmet>
-        {`${data?.restaurant.restaurant?.name} | Nuber Eats`}
+        <title>{`${data?.restaurant.restaurant?.name} | Nuber Eats`}</title>
       </Helmet>
       <header
         className="bg-gray-800 py-32 bg-cover bg-center"
