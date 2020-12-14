@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { gql, useQuery, useSubscription } from '@apollo/client';
 import { getOrder, getOrderVariables } from './../__generated__/getOrder';
@@ -36,7 +36,7 @@ interface IParams {
 const Order: React.FC = () => {
   const { id } = useParams<IParams>();
 
-  const { data, loading } = useQuery<
+  const { data, loading, subscribeToMore } = useQuery<
     getOrder,
     getOrderVariables
   >(GET_ORDER, {
@@ -47,19 +47,45 @@ const Order: React.FC = () => {
     }
   });
 
-  const { data: subscriptionData, loading: subscriptionLoading } = useSubscription<
-    orderUpdates,
-    orderUpdatesVariables
-  >(ORDER_SUBSCRIPTION, {
-    variables: {
-      input: {
-        id: +id,
-      }
+  useEffect(() => {
+    if (data?.getOrder.ok) {
+      subscribeToMore({
+        document: ORDER_SUBSCRIPTION,
+        variables: {
+          input: {
+            id: +id,
+          },
+        },
+        updateQuery: (prev,
+          { subscriptionData:{ data } }: { subscriptionData: { data: orderUpdates } }
+        ) => {
+          if (!data) {
+            return prev;
+          }
+          return {
+            getOrder: {
+              ...prev.getOrder,
+              order: {
+                ...data.orderUpdates
+              }
+            }
+          }
+        }
+      })
     }
-  })
+  }, [data]);
 
-  console.log('data', data);
-  console.log('subscriptionData', subscriptionData)
+  // const { data: subscriptionData, loading: subscriptionLoading } = useSubscription<
+  //   orderUpdates,
+  //   orderUpdatesVariables
+  // >(ORDER_SUBSCRIPTION, {
+  //   variables: {
+  //     input: {
+  //       id: +id,
+  //     }
+  //   }
+  // })
+
   return (
     <div>
       <Helmet>
