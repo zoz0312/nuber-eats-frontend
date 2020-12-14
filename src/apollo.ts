@@ -8,9 +8,19 @@ const token = localStorage.getItem(LOCALSTORAGE_TOKEN);
 export const isLoggedInVar = makeVar(Boolean(token));
 export const authTokenVar = makeVar(token);
 
-const URL = `192.168.219.200:4000/graphql`;
-const WS_HOST = `ws://${URL}`;
-const HTTP_HOST = `http://${URL}`;
+const isProd = process.env.NODE_ENV === 'production';
+
+const URL = isProd
+  ? `aju-nuber-eats.herokuapp.com/graphql`
+  : `192.168.219.200:4000/graphql`;
+
+const WS_HOST = isProd
+  ? `wss://${URL}`
+  : `ws://${URL}`;
+
+const HTTP_HOST = isProd
+  ? `https://${URL}`
+  : `http://${URL}`;
 
 const wsLink = new WebSocketLink({
   uri: WS_HOST,
