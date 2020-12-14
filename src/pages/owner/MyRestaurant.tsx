@@ -123,15 +123,10 @@ const MyRestaurant: React.FC = () => {
           {data?.myRestaurant.restaurant?.name}
         </div>
         <div className="my-3">
-            <button
-              type="button"
-              onClick={triggerPaddle}
-              className="mr-8 text-white bg-gray-800 py-3 px-10"
-            >
-              <Link
-                to={`/restaurant/${id}/add-dish`}
-              >Add Dish &rarr;</Link>
-            </button>
+          <Link
+            to={`/restaurant/${id}/add-dish`}
+            className="mr-8 text-white bg-gray-800 hover:bg-gray-700 transition-colors py-3 px-10"
+          >Add Dish &rarr;</Link>
           { data?.myRestaurant.restaurant?.isPromoted ? (
             <div className="inline-block text-lime-700">Is Already Promotted!</div>
           ) : (
