@@ -1,4 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { gql, useSubscription, useMutation } from '@apollo/client';
+import { FULL_ORDER_FRAMGENT } from './../../fragments';
+import { cookedOrders } from './../../__generated__/cookedOrders';
+import { Link, useHistory } from 'react-router-dom';
+import { takeOrder, takeOrderVariables } from './../../__generated__/takeOrder';
 
 interface ICoords {
   lat: number;
@@ -17,15 +22,29 @@ declare global {
   }
 };
 
-const Driver:React.FC<IDriverProps> = () => <div className="text-lg">🛵</div>
+const COOKED_ORDERS_SUBSCRIPTION = gql`
+  subscription cookedOrders {
+    cookedOrders {
+      ...FullOrderParts
+    }
+  }
+  ${FULL_ORDER_FRAMGENT}
+`;
+
+const TAKE_ORDER_MUTATION = gql`
+  mutation takeOrder($input: TakeOrderInput!) {
+    takeOrder(input: $input) {
+      ok
+      error
+    }
+  }
+`;
 
 const DashBoard: React.FC = () => {
   const [driverCoords, setDriverCoords] = useState<ICoords>({
     lat: 0,
     lng: 0,
   });
-  const [map, setMap] = useState<google.maps.Map>();
-  const [maps, setMaps] = useState<any>();
 
   const onSuccess = ({coords: { latitude, longitude }}: any) => {
     setDriverCoords({
@@ -84,8 +103,39 @@ const DashBoard: React.FC = () => {
     }
   }, [driverCoords]);
 
-
   const onGetRouteClick = () => {
+    window.open('https://map.kakao.com/link/to/도착지,37.402056,127.108212')
+  };
+
+  const { data: cookedOrdersData } = useSubscription<cookedOrders>(COOKED_ORDERS_SUBSCRIPTION);
+
+  useEffect(() => {
+    if (cookedOrdersData?.cookedOrders.id) {
+      //render map
+    }
+  }, []);
+
+  const history = useHistory();
+  const onCompleted = (data: takeOrder) => {
+    if (data.takeOrder.ok) {
+      history.push(`/orders/${cookedOrdersData?.cookedOrders.id}`);
+    }
+  }
+  const [takeOrderMutation] = useMutation<
+    takeOrder,
+    takeOrderVariables
+  >(TAKE_ORDER_MUTATION, {
+    onCompleted
+  });
+
+  const triggerMutation = (id: number) => {
+    takeOrderMutation({
+      variables: {
+        input: {
+          id
+        }
+      }
+    })
   }
 
   return (
@@ -99,7 +149,24 @@ const DashBoard: React.FC = () => {
       >
         <div id="kakao_map" className="w-full h-full"></div>
       </div>
-      <button onClick={onGetRouteClick}>Get Route</button>
+      <button onClick={onGetRouteClick}>도착지 길찾기</button>
+
+      { cookedOrdersData?.cookedOrders ? (
+      <>
+        <div className="max-w-screen-sm mx-auto bg-white shadow-lg py-8 px-5">
+          <h1 className="text-center text-3xl">New Cooked Order</h1>
+          <h2 className="text-center text-xl py-4">
+            {cookedOrdersData.cookedOrders.restaurant?.name}
+          </h2>
+          <button
+            onClick={() => { triggerMutation(cookedOrdersData?.cookedOrders.id) }}
+            className="btn w-full"
+          >배달하기 &rarr;</button>
+        </div>
+      </>
+      ) : (
+        <h1 className="text-center text-2xl mt-5">아직 주문이 없습니다!</h1>
+      )}
     </>
   );
 }

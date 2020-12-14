@@ -145,17 +145,25 @@ const Order: React.FC = () => {
                 )}
               </div>
             )}
-            {
-              (
-                userData?.me.role === UserRole.Client ||
-                (data?.getOrder.order?.status !== OrderStatus.Pending &&
-                data?.getOrder.order?.status !== OrderStatus.Cooking)
-              ) && (
-                <div className="text-center pt-10">
-                  <span className="text-lime-600 text-3xl">Status: { data?.getOrder.order?.status }</span>
-                </div>
-              )
-            }
+
+            {userData?.me.role === UserRole.Delivery && (
+              <div className="w-full mt-5">
+                { data?.getOrder.order?.status === OrderStatus.Cooked && (
+                  <button className="btn w-full" onClick={() => onButtonClick(OrderStatus.PickedUp)}>픽업 하기</button>
+                )}
+                { data?.getOrder.order?.status === OrderStatus.PickedUp && (
+                  <button className="btn w-full" onClick={() => onButtonClick(OrderStatus.Delivered)}>배달 완료</button>
+                )}
+              </div>
+            )}
+            <div className="text-center pt-10">
+              <span className="text-lime-600 text-3xl">Status: { data?.getOrder.order?.status }</span>
+            </div>
+            {data?.getOrder.order?.status === OrderStatus.Delivered && (
+              <div className="text-center pt-10">
+                <span className="text-lime-600 text-3xl">이용해주셔서 감사합니다!</span>
+              </div>
+            )}
           </div>
         </div>
       </Article>
