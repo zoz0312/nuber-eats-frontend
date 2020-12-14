@@ -15,6 +15,7 @@ import AddRestaurant from '../pages/owner/AddRestaurants';
 import MyRestaurant from './../pages/owner/MyRestaurant';
 import AddDish from '../pages/owner/AddDish';
 import Order from '../pages/Order';
+import DashBoard from '../pages/driver/DashBoard';
 
 const commonRoutes = [
   { path: '/confirm', component: ConfirmEmail },
@@ -32,6 +33,9 @@ const restaurantRoutes = [
   { path: '/add-restaurant', component: AddRestaurant },
   { path: '/restaurant/:id', component: MyRestaurant },
   { path: '/restaurant/:id/add-dish', component: AddDish },
+];
+const driverRoutes = [
+  { path: '/', component: DashBoard },
 ];
 
 const LoggedInRouter = () => {
@@ -54,6 +58,9 @@ const LoggedInRouter = () => {
           <Route exact path={route.path} key={route.path} component={route.component} />
         ))}
         { data.me.role === UserRole.Owner && restaurantRoutes.map(route => (
+          <Route exact path={route.path} key={route.path} component={route.component} />
+        ))}
+        { data.me.role === UserRole.Delivery && driverRoutes.map(route => (
           <Route exact path={route.path} key={route.path} component={route.component} />
         ))}
         <Route component={NotFound}/>
