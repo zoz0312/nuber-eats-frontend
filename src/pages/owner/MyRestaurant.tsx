@@ -1,13 +1,14 @@
-import React from 'react';
-import { gql, useQuery, useMutation } from '@apollo/client';
-import { Link, useParams } from 'react-router-dom';
-import { RESTUARANT_FRAGMENT, DISH_FRAGMENT, ORDERS_FRAGMENT } from './../../fragments';
+import React, { useEffect } from 'react';
+import { gql, useQuery, useMutation, useSubscription } from '@apollo/client';
+import { Link, useParams, useHistory } from 'react-router-dom';
+import { RESTUARANT_FRAGMENT, DISH_FRAGMENT, ORDERS_FRAGMENT, FULL_ORDER_FRAMGENT } from './../../fragments';
 import { myRestaurant, myRestaurantVariables } from './../../__generated__/myRestaurant';
 import { Helmet } from 'react-helmet-async';
 import Article from '../../components/Article';
 import Dish from './../../components/Dish';
 import { VictoryChart, VictoryBar, VictoryAxis, VictoryVoronoiContainer, VictoryLine, VictoryZoomContainer, VictoryTheme, VictoryLabel } from 'victory';
 import { createPayment, createPaymentVariables } from './../../__generated__/createPayment';
+import { pendingOrders } from './../../__generated__/pendingOrders';
 
 export const MY_RESTAURANT_QUERY = gql`
   query myRestaurant($input: MyRestaurantInput!) {
@@ -37,6 +38,15 @@ const CREATE_PAYMENT_MUTATION = gql`
       error
     }
   }
+`;
+
+const PENDING_ORDERS_SUBSCRIPTION = gql`
+  subscription pendingOrders {
+    pendingOrders {
+      ...FullOrderParts
+    }
+  }
+  ${FULL_ORDER_FRAMGENT}
 `;
 
 interface IParams {
@@ -84,6 +94,15 @@ const MyRestaurant: React.FC = () => {
       }
     });
   };
+
+  const { data:subscriptionData } = useSubscription<pendingOrders>(PENDING_ORDERS_SUBSCRIPTION);
+  const history = useHistory();
+
+  useEffect(() => {
+    if (subscriptionData?.pendingOrders.id) {
+      history.push(`/orders/${subscriptionData?.pendingOrders.id}`)
+    }
+  }, [subscriptionData])
 
   return (
     <div>
@@ -167,7 +186,7 @@ const MyRestaurant: React.FC = () => {
               />
               <VictoryAxis
                 style={{tickLabels: {
-                  fontSize: 20,
+                  fontSize: 15,
                   fill: "#4D7C0F",
                 }}}
                 dependentAxis

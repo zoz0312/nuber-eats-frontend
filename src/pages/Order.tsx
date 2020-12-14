@@ -6,6 +6,8 @@ import { Helmet } from 'react-helmet';
 import Article from '../components/Article';
 import { FULL_ORDER_FRAMGENT } from './../fragments';
 import { orderUpdates, orderUpdatesVariables } from './../__generated__/orderUpdates';
+import { useMe } from '../hooks/useMe';
+import { UserRole } from '../__generated__/globalTypes';
 
 export const GET_ORDER = gql`
   query getOrder($input: GetOrderInput!) {
@@ -34,6 +36,7 @@ interface IParams {
 }
 
 const Order: React.FC = () => {
+  const { data: userData } = useMe();
   const { id } = useParams<IParams>();
 
   const { data, loading, subscribeToMore } = useQuery<
@@ -107,9 +110,21 @@ const Order: React.FC = () => {
             <div className="px-5 py-3 border-b border-lime-700">
               <span className="text-gray-700">배달원: </span>{ data?.getOrder.order?.driver?.email ? (data?.getOrder.order?.driver?.email) : '배정되지 않았습니다.' }
             </div>
-            <div className="text-center pt-10">
-              <span className="text-lime-600 text-3xl">Status: { data?.getOrder.order?.status }</span>
-            </div>
+            {userData?.me.role === UserRole.Client && (
+              <div className="text-center pt-10">
+                <span className="text-lime-600 text-3xl">Status: { data?.getOrder.order?.status }</span>
+              </div>
+            )}
+            {userData?.me.role === UserRole.Owner && (
+              <div className="w-full mt-5">
+                { data?.getOrder.order?.status === 'Pending' && (
+                  <button className="btn w-full">주문 받기</button>
+                )}
+                { data?.getOrder.order?.status === 'Cooking' && (
+                  <button className="btn w-full">요리 완료</button>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </Article>
