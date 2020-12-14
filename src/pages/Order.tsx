@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { gql, useQuery, useSubscription } from '@apollo/client';
+import { gql, useQuery, useSubscription, useMutation } from '@apollo/client';
 import { getOrder, getOrderVariables } from './../__generated__/getOrder';
 import { Helmet } from 'react-helmet';
 import Article from '../components/Article';
 import { FULL_ORDER_FRAMGENT } from './../fragments';
 import { orderUpdates, orderUpdatesVariables } from './../__generated__/orderUpdates';
 import { useMe } from '../hooks/useMe';
-import { UserRole } from '../__generated__/globalTypes';
+import { OrderStatus, UserRole } from '../__generated__/globalTypes';
+import { editOrder, editOrderVariables } from './../__generated__/editOrder';
 
 export const GET_ORDER = gql`
   query getOrder($input: GetOrderInput!) {
@@ -31,6 +32,15 @@ const ORDER_SUBSCRIPTION = gql`
   ${FULL_ORDER_FRAMGENT}
 `;
 
+const EDIT_ORDER = gql`
+  mutation editOrder($input: EditOrderInput!) {
+    editOrder(input: $input) {
+      ok
+      error
+    }
+  }
+`;
+
 interface IParams {
   id: string;
 }
@@ -38,6 +48,11 @@ interface IParams {
 const Order: React.FC = () => {
   const { data: userData } = useMe();
   const { id } = useParams<IParams>();
+
+  const [editOrderMutation] = useMutation<
+    editOrder,
+    editOrderVariables
+  >(EDIT_ORDER);
 
   const { data, loading, subscribeToMore } = useQuery<
     getOrder,
@@ -89,6 +104,16 @@ const Order: React.FC = () => {
   //   }
   // })
 
+  const onButtonClick = (newStatus: OrderStatus) => {
+    editOrderMutation({
+      variables: {
+        input: {
+          id: +id,
+          status: newStatus,
+        }
+      }
+    })
+  }
   return (
     <div>
       <Helmet>
@@ -110,21 +135,27 @@ const Order: React.FC = () => {
             <div className="px-5 py-3 border-b border-lime-700">
               <span className="text-gray-700">배달원: </span>{ data?.getOrder.order?.driver?.email ? (data?.getOrder.order?.driver?.email) : '배정되지 않았습니다.' }
             </div>
-            {userData?.me.role === UserRole.Client && (
-              <div className="text-center pt-10">
-                <span className="text-lime-600 text-3xl">Status: { data?.getOrder.order?.status }</span>
-              </div>
-            )}
             {userData?.me.role === UserRole.Owner && (
               <div className="w-full mt-5">
-                { data?.getOrder.order?.status === 'Pending' && (
-                  <button className="btn w-full">주문 받기</button>
+                { data?.getOrder.order?.status === OrderStatus.Pending && (
+                  <button className="btn w-full" onClick={() => onButtonClick(OrderStatus.Cooking)}>주문 받기</button>
                 )}
-                { data?.getOrder.order?.status === 'Cooking' && (
-                  <button className="btn w-full">요리 완료</button>
+                { data?.getOrder.order?.status === OrderStatus.Cooking && (
+                  <button className="btn w-full" onClick={() => onButtonClick(OrderStatus.Cooked)}>요리 완료</button>
                 )}
               </div>
             )}
+            {
+              (
+                userData?.me.role === UserRole.Client ||
+                (data?.getOrder.order?.status !== OrderStatus.Pending &&
+                data?.getOrder.order?.status !== OrderStatus.Cooking)
+              ) && (
+                <div className="text-center pt-10">
+                  <span className="text-lime-600 text-3xl">Status: { data?.getOrder.order?.status }</span>
+                </div>
+              )
+            }
           </div>
         </div>
       </Article>
