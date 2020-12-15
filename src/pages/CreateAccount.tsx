@@ -117,7 +117,11 @@ const CreateAccount = () => {
           { errors.password?.message && (
             <FormError errorMessage={errors.password?.message} />
           )}
-          <select name="role" ref={register({ required: true })} className="input">
+          <select
+            name="role"
+            ref={register({ required: true })}
+            className="input"
+          >
             {Object.keys(UserRole).map((role, index) => <option key={index}>{role}</option>)}
           </select>
           <Button

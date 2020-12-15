@@ -29,3 +29,11 @@
 .btn-dish {
   @apply text-white transition-colors focus:outline-none;
 }
+
+select {
+  background-size: 10px !important;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background: url('../images/arrow.png') no-repeat 95% 50%;
+}
