@@ -6,6 +6,7 @@ import Button from './../../components/Button';
 import { Helmet } from 'react-helmet-async';
 import FormError from '../../components/FormError';
 import { BASE_HOST } from './../../apollo';
+import { useHistory } from 'react-router-dom';
 
 const CREATE_RESTAURANT_MUTATION = gql`
   mutation createRestaurant($input: CreateRestaurantInput!) {
@@ -26,6 +27,7 @@ interface IFormProps {
 const AddRestaurant: React.FC = () => {
   // const client = useApolloClient();
 
+  const history = useHistory();
   const [uploading, setUploading] = useState(false);
   const onCompleted = (data: createRestaurant) => {
     const { createRestaurant: { ok } } = data;
@@ -46,7 +48,7 @@ const AddRestaurant: React.FC = () => {
       //   })
       //   console.log('queryResult', queryResult);
       // }, []);
-      // history.push('/');
+      history.push('/');
     }
   };
 
