@@ -5,6 +5,8 @@ Nomad Coder에서 수강한 Nuber Eats Clone Coding입니다.<br />
 크게 식당, 손님, 배달원으로 구성된 배달음식 서비스 입니다.<br />
 큼직한 기능들은 구현되고 세세한 기능들은 개인적으로 추가한 내용들입니다.
 
+[nuber-eats-backend 소스코드](../nuber-eats-backend)
+
 ## 📆개발기간
 20.12.07 ~ 20.12.18
 
@@ -14,7 +16,7 @@ https://sharp-dubinsky-7a4b59.netlify.app/
 ## 💻Stack
  - [X] Typescript
  - [X] React.js
- - [X] GraphQL Client
+ - [X] GraphQL (Apollo Client)
  - [X] Victory Chart
  - [X] Tailwind Css
  - [X] Jest (Unit Test)
