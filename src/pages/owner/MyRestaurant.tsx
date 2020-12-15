@@ -61,10 +61,11 @@ const MyRestaurant: React.FC = () => {
   >(MY_RESTAURANT_QUERY, {
       variables: {
         input: {
-        id: +id,
+          id: +id,
+        }
       }
     }
-  });
+  );
 
   const onCompleted = (data: createPayment) => {
     if (data.createPayment) {
@@ -76,10 +77,18 @@ const MyRestaurant: React.FC = () => {
     createPayment,
     createPaymentVariables
   >(CREATE_PAYMENT_MUTATION, {
-    onCompleted
+    onCompleted,
+    refetchQueries: [{
+      query: MY_RESTAURANT_QUERY,
+      variables: {
+        input: {
+          id: +id,
+        }
+      }
+    }]
   });
 
-  const triggerPaddle = () => {
+  const triggerPaddle = async () => {
     // TODO: paddle Payment
     const paddleSampleData = {
       checkout: { id: 1 }
