@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import { Link, useHistory } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { CATEGORY_FRAGMENT, RESTUARANT_FRAGMENT } from '../../fragments';
+import Article from './../../components/Article';
 
 export const RESTAURANTS_QUERY = gql`
   query restaurantsPageQuery($input: RestaurantsInput!) {
@@ -57,7 +58,7 @@ const ClientRestaurants: React.FC = () => {
       pathname: '/search',
       search: `?term=${searchTerm}`,
     })
-  }
+  };
 
   return (
     <section>
@@ -74,8 +75,8 @@ const ClientRestaurants: React.FC = () => {
           className="input w-3/4 md:w-3/12 rounded-md border-0"
           placeholder="Search restaurats..." />
       </form>
-      <div>
-        {!loading && (
+      <Article loading={loading}>
+        {data?.restaurants.results?.length !== 0 ? (
           <div className="max-w-screen-2xl mx-auto mt-8 pb-20">
             <div className="flex justify-around max-w-sm mx-auto">
             {data?.allcategories.categories?.map((category, index) => (
@@ -122,8 +123,13 @@ const ClientRestaurants: React.FC = () => {
               ) : <div></div>}
             </div>
           </div>
+        ) : (
+          <div className="text-center">
+            <h4 className="text-xl mb-5">등록된 가게들이 없습니다!</h4>
+            <h5 className="text-md text-lime-600">다음에 서비스를 다시 이용해 주세요 :)</h5>
+          </div>
         )}
-      </div>
+      </Article>
     </section>
   )
 }
