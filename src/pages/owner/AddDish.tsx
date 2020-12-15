@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { gql, useMutation } from '@apollo/client';
 import { createDish, createDishVariables } from './../../__generated__/createDish';
 import Article from '../../components/Article';
@@ -7,6 +7,7 @@ import { Helmet } from 'react-helmet-async';
 import { useForm } from 'react-hook-form';
 import Button from './../../components/Button';
 import { MY_RESTAURANT_QUERY } from './MyRestaurant';
+import { fileUploader } from './../../functions/imageUploader';
 
 const CREATE_DISH_MUTATION = gql`
   mutation createDish($input: CreateDishInput!) {
@@ -25,10 +26,12 @@ interface IDishForm {
   name: string;
   price: string;
   description: string;
+  file: any;
   [key: string]: string;
 }
 
 const AddDish: React.FC = () => {
+  const history = useHistory();
   const { id } = useParams<IParams>();
   const [options, setOptions] = useState<number[]>([]);
   const [choices, setChoices] = useState<{optionId: number, id: number}[]>([]);
@@ -37,6 +40,7 @@ const AddDish: React.FC = () => {
     const { createDish: { ok } } = data;
     if (ok) {
       // TODO: something
+      history.goBack();
     }
   };
 
@@ -65,9 +69,9 @@ const AddDish: React.FC = () => {
     mode: 'onChange',
   });
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     if (loading) { return; }
-    const { name, price, description, ...dishOption } = getValues();
+    const { name, price, description, file, ...dishOption } = getValues();
     const dishOptions = options.map(theId => {
       const optionChoice =
         choices
@@ -83,18 +87,20 @@ const AddDish: React.FC = () => {
       }
     });
 
+    const photo = await fileUploader(file[0]);
+
     createDishMutation({
       variables: {
         input: {
           name,
           price: +price,
           description,
+          photo,
           restaurantId: +id,
           options: dishOptions,
         }
       }
     });
-    // history.goBack();
   }
 
   const onAddOptionClick = () => {
@@ -159,6 +165,14 @@ const AddDish: React.FC = () => {
             type="text"
             required
           />
+          <div>
+            <input
+              type="file"
+              name="file"
+              accept="image/*"
+              ref={register}
+            />
+          </div>
           <div
             className="flex flex-col items-start"
           >

@@ -7,6 +7,7 @@ import { Helmet } from 'react-helmet-async';
 import FormError from '../../components/FormError';
 import { BASE_HOST } from './../../apollo';
 import { useHistory } from 'react-router-dom';
+import { fileUploader } from './../../functions/imageUploader';
 
 const CREATE_RESTAURANT_MUTATION = gql`
   mutation createRestaurant($input: CreateRestaurantInput!) {
@@ -74,15 +75,7 @@ const AddRestaurant: React.FC = () => {
     setUploading(true);
     try {
       const { file, name, categoryName, address } = getValues();
-      const actualFile = file[0];
-      const formBody = new FormData();
-      formBody.append('file', actualFile);
-      const { url: coverImage } = await (
-        await fetch(`${BASE_HOST}/uploads`, {
-          method: 'POST',
-          body: formBody
-        })
-      ).json();
+      const coverImage = await fileUploader(file[0]);
       createRestaurantMutation({
         variables: {
           input: {
