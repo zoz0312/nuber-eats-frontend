@@ -79,7 +79,7 @@ https://sharp-dubinsky-7a4b59.netlify.app/
 
 ### Owner
  - <del>[X] 나의 식당 수정</del>
- - [ ] 나의 식당 삭제
+ - <del>[X] 나의 식당 삭제</del>
  - [ ] 나의 식당 음식 수정
  - [ ] 나의 식당 음식 삭제
  - [ ] 나의 주문 전체 목록
