@@ -58,6 +58,7 @@ const CreateAccount = () => {
   });
 
   const onSubmit = () => {
+    console.log('Submit')
     if (loading) {
       return;
     }
@@ -79,7 +80,7 @@ const CreateAccount = () => {
         <title>Create Account | Number Eats</title>
       </Helmet>
       <div className="w-full mt-10 lg:mt-32 max-w-screen-sm flex flex-col items-center">
-        <img src={logo} className="w-60 h-16 mb-3" />
+        <img src={logo} alt="logo" className="w-60 h-16 mb-3" />
         <h4 className="w-full font-semibold text-left pl-5 text-2xl mb-6">Welcome back</h4>
         <form
           onSubmit={handleSubmit(onSubmit)}

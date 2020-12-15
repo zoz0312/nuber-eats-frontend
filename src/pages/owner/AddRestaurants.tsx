@@ -5,7 +5,6 @@ import { useForm } from 'react-hook-form';
 import Button from './../../components/Button';
 import { Helmet } from 'react-helmet-async';
 import FormError from '../../components/FormError';
-import { useHistory } from 'react-router-dom';
 
 const CREATE_RESTAURANT_MUTATION = gql`
   mutation createRestaurant($input: CreateRestaurantInput!) {
@@ -26,7 +25,6 @@ interface IFormProps {
 const AddRestaurant: React.FC = () => {
   // const client = useApolloClient();
 
-  const history = useHistory();
   const [uploading, setUploading] = useState(false);
   const onCompleted = (data: createRestaurant) => {
     const { createRestaurant: { ok } } = data;
@@ -63,7 +61,6 @@ const AddRestaurant: React.FC = () => {
     register,
     getValues,
     formState,
-    errors,
     handleSubmit
   } = useForm<IFormProps>({
     mode: 'onChange',

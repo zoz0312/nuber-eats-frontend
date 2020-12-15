@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { gql, useSubscription, useMutation } from '@apollo/client';
 import { FULL_ORDER_FRAMGENT } from './../../fragments';
 import { cookedOrders } from './../../__generated__/cookedOrders';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { takeOrder, takeOrderVariables } from './../../__generated__/takeOrder';
 import GoogleMapReact from 'google-map-react';
 
@@ -73,7 +73,7 @@ const DashBoard: React.FC = () => {
     if (map && maps) {
       map.panTo(new maps.LatLng(driverCoords.lat, driverCoords.lng));
     }
-  }, [driverCoords.lat, driverCoords.lng]);
+  }, [driverCoords.lat, driverCoords.lng, map, maps]);
 
   const onApiLoaded = ({ map, maps } : { map: any, maps: any }) => {
     map.panTo(new maps.LatLng(driverCoords.lat, driverCoords.lng));
@@ -127,7 +127,7 @@ const DashBoard: React.FC = () => {
       // render map
       // makeRoute();
     }
-  }, []);
+  }, [cookedOrdersData?.cookedOrders.id]);
 
   const history = useHistory();
   const onCompleted = (data: takeOrder) => {

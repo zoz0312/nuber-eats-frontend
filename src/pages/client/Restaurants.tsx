@@ -36,7 +36,7 @@ interface IFormProps {
 
 const ClientRestaurants: React.FC = () => {
   const [page, setPage] = useState(1);
-  const { data, loading, error } = useQuery<
+  const { data, loading } = useQuery<
     restaurantsPageQuery,
     restaurantsPageQueryVariables
   >(RESTAURANTS_QUERY, {
@@ -65,7 +65,6 @@ const ClientRestaurants: React.FC = () => {
         <title>Home | Nuber Eats</title>
       </Helmet>
       <form
-        role="form"
         onSubmit={handleSubmit(onSearchSubmit)}
         className="bg-gray-800 w-full py-40 flex items-center justify-center">
         <input

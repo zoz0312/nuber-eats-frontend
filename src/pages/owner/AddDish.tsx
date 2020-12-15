@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { gql, useMutation } from '@apollo/client';
 import { createDish, createDishVariables } from './../../__generated__/createDish';
 import Article from '../../components/Article';
@@ -30,7 +30,6 @@ interface IDishForm {
 
 const AddDish: React.FC = () => {
   const { id } = useParams<IParams>();
-  const history = useHistory();
   const [options, setOptions] = useState<number[]>([]);
   const [choices, setChoices] = useState<{optionId: number, id: number}[]>([]);
 
@@ -189,13 +188,13 @@ const AddDish: React.FC = () => {
                   <div className="inline-block">
                     <button
                       type="button"
-                      role="add-chice-btn"
+                      name="add-dish-btn"
                       onClick={() => onAddChoiceClick(id)}
                       className="cursor-pointer text-white bg-lime-600 py-1 px-2 hover:bg-lime-700 transition-colors"
                     >Add Dish Choice</button>
                     <button
-                      role="delete-option-btn"
                       type="button"
+                      name="delete-option-btn"
                       className="bg-red-500 text-white w-8 h-8 font-bold hover:bg-red-700 transition-colors"
                       onClick={() => onDeleteOptionClick(id)}
                     >X</button>
@@ -225,8 +224,8 @@ const AddDish: React.FC = () => {
                           className="mr-2 input-sm"
                         />
                         <button
-                          role="delete-option-btn"
                           type="button"
+                          name="delete-choice-btn"
                           className="bg-red-500 text-white w-8 h-8 font-bold hover:bg-red-700 transition-colors"
                           onClick={() => onDeleteChoiceClick(id, choiceId.id)}
                         >X</button>
