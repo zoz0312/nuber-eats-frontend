@@ -24,6 +24,15 @@ export const MY_RESTAURANT_QUERY = gql`
   ${ORDERS_FRAGMENT}
 `;
 
+export const refetchMyRestaurant = (id: number) => ({
+  query: MY_RESTAURANT_QUERY,
+  variables: {
+    input: {
+      id,
+    }
+  }
+});
+
 export const useMyRestaurant = (id: number) => {
   return useQuery<
     myRestaurant,
