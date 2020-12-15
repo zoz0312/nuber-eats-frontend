@@ -1,5 +1,5 @@
 import { gql, useMutation } from '@apollo/client';
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useHistory } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
@@ -22,10 +22,12 @@ export const CREATE_ACCOUNT_MUTATION = gql`
 interface ICreateAccountForm {
   email: string;
   password: string;
+  repassword: string;
   role: UserRole;
 }
 
 const CreateAccount = () => {
+  const [isSame, setIsSame] = useState(false);
   const {
     register,
     getValues,
@@ -58,10 +60,15 @@ const CreateAccount = () => {
   });
 
   const onSubmit = () => {
+    console.log('onSubmit');
     if (loading) {
       return;
     }
-    const { email, password, role } = getValues();
+    const { email, password, repassword, role } = getValues();
+    if (password !== repassword) {
+      setIsSame(true);
+      return;
+    }
     createAccountMutation({
       variables: {
         createAccountInput: {
@@ -117,6 +124,22 @@ const CreateAccount = () => {
           { errors.password?.message && (
             <FormError errorMessage={errors.password?.message} />
           )}
+          <input
+            ref={register({
+              required: 'Password is required',
+              minLength: 10,
+            })}
+            name="repassword"
+            type="password"
+            placeholder="Password Recap"
+            className="input"
+          />
+          { errors.repassword?.type === 'minLength' && (
+            <FormError errorMessage={'비밀번호는 최소 10자 이상이어야 합니다.'} />
+          )}
+          { errors.repassword?.message && (
+            <FormError errorMessage={errors.repassword?.message} />
+          )}
           <select
             name="role"
             ref={register({ required: true })}
@@ -124,6 +147,9 @@ const CreateAccount = () => {
           >
             {Object.keys(UserRole).map((role, index) => <option key={index}>{role}</option>)}
           </select>
+          { isSame && (
+            <FormError errorMessage={'Password is not same!'} />
+          )}
           <Button
             canClick={formState.isValid}
             loading={loading}

@@ -19,7 +19,7 @@ https://sharp-dubinsky-7a4b59.netlify.app/
  - [X] Tailwind Css
  - [X] Jest (Unit Test)
  - [X] Cypress (E2E Test)
- - [ ] Google Map
+ - [X] Google Map
  - [X] Netlify
 
 ### ⚛️ React 관련 라이브러리
