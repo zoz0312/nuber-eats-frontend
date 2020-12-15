@@ -1,35 +1,15 @@
 import React, { useEffect } from 'react';
-import { gql, useQuery, useMutation, useSubscription } from '@apollo/client';
+import { gql, useMutation, useSubscription } from '@apollo/client';
 import { Link, useParams, useHistory } from 'react-router-dom';
-import { RESTUARANT_FRAGMENT, DISH_FRAGMENT, ORDERS_FRAGMENT, FULL_ORDER_FRAMGENT } from './../../fragments';
-import { myRestaurant, myRestaurantVariables } from './../../__generated__/myRestaurant';
+import { FULL_ORDER_FRAMGENT } from './../../fragments';
 import { Helmet } from 'react-helmet-async';
 import Article from '../../components/Article';
 import Dish from './../../components/Dish';
 import { VictoryChart, VictoryAxis, VictoryVoronoiContainer, VictoryLine, VictoryTheme, VictoryLabel } from 'victory';
 import { createPayment, createPaymentVariables } from './../../__generated__/createPayment';
 import { pendingOrders } from './../../__generated__/pendingOrders';
-
-export const MY_RESTAURANT_QUERY = gql`
-  query myRestaurant($input: MyRestaurantInput!) {
-    myRestaurant(input:$input) {
-      ok
-      error
-      restaurant {
-        ...RestaurantParts
-        menu {
-          ...DishParts
-        }
-        orders {
-          ...OrderParts
-        }
-      }
-    }
-  }
-  ${RESTUARANT_FRAGMENT}
-  ${DISH_FRAGMENT}
-  ${ORDERS_FRAGMENT}
-`;
+import { useMyRestaurant } from '../../hooks/useMyRestaurant';
+import { MY_RESTAURANT_QUERY } from './../../hooks/useMyRestaurant';
 
 const CREATE_PAYMENT_MUTATION = gql`
   mutation createPayment($input: CreatePaymentInput!) {
@@ -55,16 +35,7 @@ interface IParams {
 
 const MyRestaurant: React.FC = () => {
   const { id } = useParams<IParams>();
-  const { data, loading } = useQuery<
-    myRestaurant,
-    myRestaurantVariables
-  >(MY_RESTAURANT_QUERY, {
-      variables: {
-        input: {
-        id: +id,
-      }
-    }
-  });
+  const { data, loading } = useMyRestaurant(+id);
 
   const onCompleted = (data: createPayment) => {
     if (data.createPayment) {
@@ -76,10 +47,18 @@ const MyRestaurant: React.FC = () => {
     createPayment,
     createPaymentVariables
   >(CREATE_PAYMENT_MUTATION, {
-    onCompleted
+    onCompleted,
+    refetchQueries: [{
+      query: MY_RESTAURANT_QUERY,
+      variables: {
+        input: {
+          id: +id,
+        }
+      }
+    }]
   });
 
-  const triggerPaddle = () => {
+  const triggerPaddle = async () => {
     // TODO: paddle Payment
     const paddleSampleData = {
       checkout: { id: 1 }
@@ -124,11 +103,15 @@ const MyRestaurant: React.FC = () => {
         </div>
         <div className="my-3">
           <Link
+            to={`/edit-restaurant/${id}`}
+            className="mr-5 text-white bg-gray-800 hover:bg-gray-700 transition-colors py-3 px-10"
+          >Edit Restaurant &rarr;</Link>
+          <Link
             to={`/restaurant/${id}/add-dish`}
-            className="mr-8 text-white bg-gray-800 hover:bg-gray-700 transition-colors py-3 px-10"
+            className="mr-5 text-white bg-gray-800 hover:bg-gray-700 transition-colors py-3 px-10"
           >Add Dish &rarr;</Link>
           { data?.myRestaurant.restaurant?.isPromoted ? (
-            <div className="inline-block text-lime-700">Is Already Promotted!</div>
+            <div className="inline-block text-lime-700 my-3">Is Already Promotted!</div>
           ) : (
             <button
               type="button"

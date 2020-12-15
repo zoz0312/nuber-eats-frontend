@@ -35,6 +35,7 @@ export interface CreateAccountInput {
 export interface CreateDishInput {
   name: string;
   price: number;
+  photo?: string | null;
   description: string;
   options?: DishOptionInputType[] | null;
   restaurantId: number;
@@ -81,6 +82,14 @@ export interface EditOrderInput {
 export interface EditProfileInput {
   email?: string | null;
   password?: string | null;
+}
+
+export interface EditRestaurantInput {
+  name?: string | null;
+  coverImage?: string | null;
+  address?: string | null;
+  categoryName?: string | null;
+  restaurantId: number;
 }
 
 export interface GetOrderInput {

@@ -63,7 +63,7 @@ const Dish: React.FC<IDishProps> = ({
               </span>
             </div>
             <span className="text-2xl font-medium">{ `$${menu.price}` }</span>
-            { menu.options !== null && (
+            { orderStarted && isSelected && menu.options !== null && (
               <div className="text-gray-600 text-xs mt-2">
                 <h5 className="my-3 font-medium">Dish Options</h5>
                 { optionItemHandle && isOptionSelected && choiceItemHandle && isChoiceSelected && menu.options?.map((option, index) => (
@@ -105,7 +105,7 @@ const Dish: React.FC<IDishProps> = ({
       <div className="h-full border-l-2 border-gray-300">
         <div
           style={{backgroundImage: `url(${menu.photo})`}}
-          className="bg-white w-32 h-32 p-3"
+          className="bg-white w-32 h-32 p-3 bg-contain bg-no-repeat bg-center"
         ></div>
       </div>
     </div>

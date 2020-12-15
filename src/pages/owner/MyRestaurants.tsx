@@ -46,7 +46,7 @@ const MyRestaurants: React.FC = () => {
         ]);
       }
     }
-  }, [data, itemList, setTotalPages]);
+  }, [data]);
 
   return (
     <div>

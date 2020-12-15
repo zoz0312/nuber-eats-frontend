@@ -60,7 +60,7 @@ const ClientCategory: React.FC = () => {
         ]);
       }
     }
-  }, [data, itemList, setTotalPages]);
+  }, [data]);
 
   return (
     <section className="max-w-screen">
@@ -74,7 +74,7 @@ const ClientCategory: React.FC = () => {
           className="bg-white w-2/6 p-5 md:pl-24 bg-cover bg-cetner"
           style={{backgroundImage: `url(${data?.category.category?.coverImage})`}}
         >
-          <h4 className="text-3xl">{ data?.category.category?.name }</h4>
+          <h4 className="text-3xl font-border">{ data?.category.category?.name }</h4>
         </div>
       </header>
       <Article loading={loading}>
