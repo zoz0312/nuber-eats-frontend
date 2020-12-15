@@ -6,8 +6,8 @@ import Article from '../../components/Article';
 import { Helmet } from 'react-helmet-async';
 import { useForm } from 'react-hook-form';
 import Button from './../../components/Button';
-import { MY_RESTAURANT_QUERY } from './MyRestaurant';
 import { fileUploader } from './../../functions/imageUploader';
+import { MY_RESTAURANT_QUERY } from './../../hooks/useMyRestaurant';
 
 const CREATE_DISH_MUTATION = gql`
   mutation createDish($input: CreateDishInput!) {

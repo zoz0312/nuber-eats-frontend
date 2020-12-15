@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { gql, useMutation } from '@apollo/client';
-import { createRestaurant, createRestaurantVariables } from './../../__generated__/createRestaurant';
+import { createRestaurant, createRestaurantVariables } from '../../__generated__/createRestaurant';
 import { useForm } from 'react-hook-form';
-import Button from './../../components/Button';
+import Button from '../../components/Button';
 import { Helmet } from 'react-helmet-async';
 import FormError from '../../components/FormError';
-import { BASE_HOST } from './../../apollo';
+import { BASE_HOST } from '../../apollo';
 import { useHistory } from 'react-router-dom';
-import { fileUploader } from './../../functions/imageUploader';
+import { fileUploader } from '../../functions/imageUploader';
 
 const CREATE_RESTAURANT_MUTATION = gql`
   mutation createRestaurant($input: CreateRestaurantInput!) {

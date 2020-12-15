@@ -1,35 +1,15 @@
 import React, { useEffect } from 'react';
-import { gql, useQuery, useMutation, useSubscription } from '@apollo/client';
+import { gql, useMutation, useSubscription } from '@apollo/client';
 import { Link, useParams, useHistory } from 'react-router-dom';
-import { RESTUARANT_FRAGMENT, DISH_FRAGMENT, ORDERS_FRAGMENT, FULL_ORDER_FRAMGENT } from './../../fragments';
-import { myRestaurant, myRestaurantVariables } from './../../__generated__/myRestaurant';
+import { FULL_ORDER_FRAMGENT } from './../../fragments';
 import { Helmet } from 'react-helmet-async';
 import Article from '../../components/Article';
 import Dish from './../../components/Dish';
 import { VictoryChart, VictoryAxis, VictoryVoronoiContainer, VictoryLine, VictoryTheme, VictoryLabel } from 'victory';
 import { createPayment, createPaymentVariables } from './../../__generated__/createPayment';
 import { pendingOrders } from './../../__generated__/pendingOrders';
-
-export const MY_RESTAURANT_QUERY = gql`
-  query myRestaurant($input: MyRestaurantInput!) {
-    myRestaurant(input:$input) {
-      ok
-      error
-      restaurant {
-        ...RestaurantParts
-        menu {
-          ...DishParts
-        }
-        orders {
-          ...OrderParts
-        }
-      }
-    }
-  }
-  ${RESTUARANT_FRAGMENT}
-  ${DISH_FRAGMENT}
-  ${ORDERS_FRAGMENT}
-`;
+import { useMyRestaurant } from '../../hooks/useMyRestaurant';
+import { MY_RESTAURANT_QUERY } from './../../hooks/useMyRestaurant';
 
 const CREATE_PAYMENT_MUTATION = gql`
   mutation createPayment($input: CreatePaymentInput!) {
@@ -55,17 +35,7 @@ interface IParams {
 
 const MyRestaurant: React.FC = () => {
   const { id } = useParams<IParams>();
-  const { data, loading } = useQuery<
-    myRestaurant,
-    myRestaurantVariables
-  >(MY_RESTAURANT_QUERY, {
-      variables: {
-        input: {
-          id: +id,
-        }
-      }
-    }
-  );
+  const { data, loading } = useMyRestaurant(+id);
 
   const onCompleted = (data: createPayment) => {
     if (data.createPayment) {

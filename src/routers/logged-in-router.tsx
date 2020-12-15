@@ -11,11 +11,12 @@ import ClientCategory from '../pages/client/Category';
 import ClientRestaurants from '../pages/client/Restaurants';
 import ClientRestaurant from '../pages/client/Restaurant';
 import MyRestaurants from '../pages/owner/MyRestaurants';
-import AddRestaurant from '../pages/owner/AddRestaurants';
+import AddRestaurant from '../pages/owner/AddRestaurant';
 import MyRestaurant from './../pages/owner/MyRestaurant';
 import AddDish from '../pages/owner/AddDish';
 import Order from '../pages/Order';
 import DashBoard from '../pages/driver/DashBoard';
+import EditRestaurant from '../pages/owner/EditRestaurant';
 
 const commonRoutes = [
   { path: '/confirm', component: ConfirmEmail },
@@ -33,6 +34,7 @@ const restaurantRoutes = [
   { path: '/add-restaurant', component: AddRestaurant },
   { path: '/restaurant/:id', component: MyRestaurant },
   { path: '/restaurant/:id/add-dish', component: AddDish },
+  { path: '/edit-restaurant/:id/', component: EditRestaurant },
 ];
 const driverRoutes = [
   { path: '/', component: DashBoard },
