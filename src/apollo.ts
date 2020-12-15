@@ -10,17 +10,19 @@ export const authTokenVar = makeVar(token);
 
 const isProd = process.env.NODE_ENV === 'production';
 
-const URL = isProd
-  ? `aju-nuber-eats.herokuapp.com/graphql`
-  : `192.168.219.200:4000/graphql`;
+const BASE_DOMAIN = isProd
+  ? `aju-nuber-eats.herokuapp.com`
+  : `192.168.219.200:4000`;
+
+export const BASE_HOST = isProd
+  ? `https://${BASE_DOMAIN}`
+  : `http://${BASE_DOMAIN}`;
 
 const WS_HOST = isProd
-  ? `wss://${URL}`
-  : `ws://${URL}`;
+  ? `wss://${BASE_DOMAIN}/graphql`
+  : `ws://${BASE_DOMAIN}/graphql`;
 
-const HTTP_HOST = isProd
-  ? `https://${URL}`
-  : `http://${URL}`;
+export const BASE_URL = `${BASE_HOST}/graphql`;
 
 const wsLink = new WebSocketLink({
   uri: WS_HOST,
@@ -33,7 +35,7 @@ const wsLink = new WebSocketLink({
 });
 
 const httpLink = createHttpLink({
-  uri: HTTP_HOST,
+  uri: BASE_URL,
 });
 
 const authLink = setContext((_, { headers }) => {

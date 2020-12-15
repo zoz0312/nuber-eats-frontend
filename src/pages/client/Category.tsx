@@ -60,7 +60,7 @@ const ClientCategory: React.FC = () => {
         ]);
       }
     }
-  }, [data]);
+  }, [data, itemList, setTotalPages]);
 
   return (
     <section className="max-w-screen">

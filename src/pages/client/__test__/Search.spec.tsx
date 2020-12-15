@@ -10,14 +10,11 @@ jest.mock('../../../components/Restaurant', () => {
   return () => <span>Restaurant</span>
 });
 
-let mockedObject = {
-  x: 2,
-  y: 2,
-  screenY: 2,
-};
-
 jest.mock('../../../hooks/useScrollPage', () => {
-  return () => (mockedObject);
+  return (num: number) => ({
+    page: 0,
+    setTotalPages: jest.fn()
+  });
 });
 
 const mockPush = jest.fn();

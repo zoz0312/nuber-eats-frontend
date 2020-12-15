@@ -46,7 +46,7 @@ const useScrollPage = (
         setPage(current => current + 1);
       }
     }
-  }, [state, totalPage]);
+  }, [state, totalPage, page]);
 
   return { page, setTotalPages };
 }

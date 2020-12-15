@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { gql, useSubscription, useMutation } from '@apollo/client';
 import { FULL_ORDER_FRAMGENT } from './../../fragments';
 import { cookedOrders } from './../../__generated__/cookedOrders';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { takeOrder, takeOrderVariables } from './../../__generated__/takeOrder';
+import GoogleMapReact from 'google-map-react';
 
 interface ICoords {
   lat: number;
@@ -40,7 +41,12 @@ const TAKE_ORDER_MUTATION = gql`
   }
 `;
 
+const Driver: React.FC<IDriverProps> = () => <div className="text-lg">🛵</div>;
+const Destination: React.FC<IDriverProps> = () => <div className="text-lg">🍔</div>;
+
 const DashBoard: React.FC = () => {
+  const [map, setMap] = useState<any>();
+  const [maps, setMaps] = useState<any>();
   const [driverCoords, setDriverCoords] = useState<ICoords>({
     lat: 0,
     lng: 0,
@@ -64,56 +70,64 @@ const DashBoard: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (driverCoords) {
-      const { kakao: { maps } } = window;
-      const startlatlng = new maps.LatLng(driverCoords.lat, driverCoords.lng);
-      const endLatLng = new maps.LatLng(driverCoords.lat, driverCoords.lng + 0.0005);
-
-      let container = document.getElementById('kakao_map');
-
-      let options = {
-        center: new maps.LatLng(driverCoords.lat, driverCoords.lng),
-        level: 5,
-      };
-
-      const map = new maps.Map(container, options);
-      const startMarker = new maps.Marker({
-        position: startlatlng,
-      });
-      const endMarker = new maps.Marker({
-        position: endLatLng,
-      });
-
-      startMarker.setMap(map);
-      endMarker.setMap(map);
-
-      const startInfoWindow = new maps.InfoWindow({
-        position : startMarker,
-        content: `<div>출발</div>`,
-      });
-      startInfoWindow.open(map, startMarker);
-
-      const endInfoWindow = new maps.InfoWindow({
-        position : endMarker,
-        content: `<div>도착</div>`,
-      });
-      endInfoWindow.open(map, endMarker);
-
-      map.setCenter(startlatlng);
+    if (map && maps) {
+      map.panTo(new maps.LatLng(driverCoords.lat, driverCoords.lng));
     }
-  }, [driverCoords]);
+  }, [driverCoords.lat, driverCoords.lng, map, maps]);
+
+  const onApiLoaded = ({ map, maps } : { map: any, maps: any }) => {
+    map.panTo(new maps.LatLng(driverCoords.lat, driverCoords.lng));
+    setMap(map);
+    setMaps(maps);
+  };
+
+  const makeRoute = () => {
+    if (map) {
+      const directionsService = new google.maps.DirectionsService();
+      const directionsRenderer = new google.maps.DirectionsRenderer({
+        polylineOptions: {
+          strokeColor: "#000",
+          strokeOpacity: 1,
+          strokeWeight: 5,
+        },
+      });
+      directionsRenderer.setMap(map);
+      directionsService.route(
+        {
+          origin: {
+            location: new google.maps.LatLng(
+              driverCoords.lat,
+              driverCoords.lng
+            ),
+          },
+          destination: {
+            location: new google.maps.LatLng(
+              driverCoords.lat + 0.005,
+              driverCoords.lng + 0.005
+            ),
+          },
+          travelMode: google.maps.TravelMode.DRIVING,
+        },
+        (result) => {
+          directionsRenderer.setDirections(result);
+        }
+      );
+    }
+  };
 
   const onGetRouteClick = () => {
-    window.open('https://map.kakao.com/link/to/도착지,37.402056,127.108212')
+    // window.open('https://map.kakao.com/link/to/도착지,37.402056,127.108212');
+    makeRoute();
   };
 
   const { data: cookedOrdersData } = useSubscription<cookedOrders>(COOKED_ORDERS_SUBSCRIPTION);
 
   useEffect(() => {
     if (cookedOrdersData?.cookedOrders.id) {
-      //render map
+      // render map
+      // makeRoute();
     }
-  }, []);
+  }, [cookedOrdersData?.cookedOrders.id]);
 
   const history = useHistory();
   const onCompleted = (data: takeOrder) => {
@@ -147,7 +161,20 @@ const DashBoard: React.FC = () => {
           height: '50vh'
         }}
       >
-        <div id="kakao_map" className="w-full h-full"></div>
+        {/* <div id="kakao_map" className="w-full h-full"></div> */}
+        <GoogleMapReact
+          defaultZoom={16}
+          defaultCenter={{
+            lat: 59.95,
+            lng: 30.33
+          }}
+          yesIWantToUseGoogleMapApiInternals
+          bootstrapURLKeys={{ key: 'AIzaSyAyZ_C6r2BN4OStlSdiid-nU_S-hirSxMU' }}
+          onGoogleApiLoaded={onApiLoaded}
+        >
+          <Driver lat={driverCoords.lat} lng={driverCoords.lng} />
+          <Destination lat={driverCoords.lat+0.005} lng={driverCoords.lng+0.005} />
+        </GoogleMapReact>
       </div>
       <button onClick={onGetRouteClick}>도착지 길찾기</button>
 

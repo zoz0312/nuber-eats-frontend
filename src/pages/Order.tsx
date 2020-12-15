@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { gql, useQuery, useSubscription, useMutation } from '@apollo/client';
+import { gql, useQuery, useMutation } from '@apollo/client';
 import { getOrder, getOrderVariables } from './../__generated__/getOrder';
 import { Helmet } from 'react-helmet';
 import Article from '../components/Article';
 import { FULL_ORDER_FRAMGENT } from './../fragments';
-import { orderUpdates, orderUpdatesVariables } from './../__generated__/orderUpdates';
+import { orderUpdates } from './../__generated__/orderUpdates';
 import { useMe } from '../hooks/useMe';
 import { OrderStatus, UserRole } from '../__generated__/globalTypes';
 import { editOrder, editOrderVariables } from './../__generated__/editOrder';
@@ -91,7 +91,7 @@ const Order: React.FC = () => {
         }
       })
     }
-  }, [data]);
+  }, [data, id, subscribeToMore]);
 
   // const { data: subscriptionData, loading: subscriptionLoading } = useSubscription<
   //   orderUpdates,

@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import Button from './../../components/Button';
 import { Helmet } from 'react-helmet-async';
 import FormError from '../../components/FormError';
-import { useHistory } from 'react-router-dom';
+import { BASE_HOST } from './../../apollo';
 
 const CREATE_RESTAURANT_MUTATION = gql`
   mutation createRestaurant($input: CreateRestaurantInput!) {
@@ -26,7 +26,6 @@ interface IFormProps {
 const AddRestaurant: React.FC = () => {
   // const client = useApolloClient();
 
-  const history = useHistory();
   const [uploading, setUploading] = useState(false);
   const onCompleted = (data: createRestaurant) => {
     const { createRestaurant: { ok } } = data;
@@ -63,7 +62,6 @@ const AddRestaurant: React.FC = () => {
     register,
     getValues,
     formState,
-    errors,
     handleSubmit
   } = useForm<IFormProps>({
     mode: 'onChange',
@@ -78,7 +76,7 @@ const AddRestaurant: React.FC = () => {
       const formBody = new FormData();
       formBody.append('file', actualFile);
       const { url: coverImage } = await (
-        await fetch('http://192.168.219.200:4000/uploads', {
+        await fetch(`${BASE_HOST}/uploads`, {
           method: 'POST',
           body: formBody
         })

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { gql, useLazyQuery, useQuery } from '@apollo/client';
+import { gql, useQuery } from '@apollo/client';
 import { RESTUARANT_FRAGMENT } from '../../fragments';
 import { searchRestaurant, searchRestaurantVariables, searchRestaurant_searchRestaurant_restaurants } from '../../__generated__/searchRestaurant';
 import Restaurant from '../../components/Restaurant';
@@ -46,7 +46,7 @@ const ClientSearch: React.FC = () => {
     if (!query) {
       return history.replace('/');
     }
-  }, [history, location]);
+  }, [history, location, query]);
 
   useEffect(() => {
     if (data && data.searchRestaurant.restaurants) {

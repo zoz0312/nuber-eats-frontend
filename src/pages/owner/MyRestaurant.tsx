@@ -6,7 +6,7 @@ import { myRestaurant, myRestaurantVariables } from './../../__generated__/myRes
 import { Helmet } from 'react-helmet-async';
 import Article from '../../components/Article';
 import Dish from './../../components/Dish';
-import { VictoryChart, VictoryBar, VictoryAxis, VictoryVoronoiContainer, VictoryLine, VictoryZoomContainer, VictoryTheme, VictoryLabel } from 'victory';
+import { VictoryChart, VictoryAxis, VictoryVoronoiContainer, VictoryLine, VictoryTheme, VictoryLabel } from 'victory';
 import { createPayment, createPaymentVariables } from './../../__generated__/createPayment';
 import { pendingOrders } from './../../__generated__/pendingOrders';
 
@@ -72,7 +72,7 @@ const MyRestaurant: React.FC = () => {
     }
   }
 
-  const [createPaymentMutation, { loading: paymentLoading }] = useMutation<
+  const [createPaymentMutation,] = useMutation<
     createPayment,
     createPaymentVariables
   >(CREATE_PAYMENT_MUTATION, {
@@ -102,7 +102,7 @@ const MyRestaurant: React.FC = () => {
     if (subscriptionData?.pendingOrders.id) {
       history.push(`/orders/${subscriptionData?.pendingOrders.id}`)
     }
-  }, [subscriptionData])
+  }, [subscriptionData, history])
 
   return (
     <div>
