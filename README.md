@@ -5,8 +5,11 @@ Nomad Coder에서 수강한 Nuber Eats Clone Coding입니다.<br />
 크게 식당, 손님, 배달원으로 구성된 배달음식 서비스 입니다.<br />
 큼직한 기능들은 구현되고 세세한 기능들은 개인적으로 추가한 내용들입니다.
 
-## 개발기간
-📆 20.12.07 ~ 20.12.18
+## 📆개발기간
+20.12.07 ~ 20.12.18
+
+## 🔗Front End 링크
+https://sharp-dubinsky-7a4b59.netlify.app/
 
 ## 💻Stack
  - [X] Typescript
@@ -17,6 +20,7 @@ Nomad Coder에서 수강한 Nuber Eats Clone Coding입니다.<br />
  - [X] Jest (Unit Test)
  - [X] Cypress (E2E Test)
  - [ ] Google Map
+ - [X] Netlify
 
 ### ⚛️ React 관련 라이브러리
  - [X] React Helmet
@@ -26,11 +30,11 @@ Nomad Coder에서 수강한 Nuber Eats Clone Coding입니다.<br />
 <hr />
 <br />
 
-## 주요 기능
+## 💡 주요 기능
 각 유저에 맞는 페이지 제공
- - Client - 음식을 주문하는 유저의 권한
- - Owner - 식당을 운영하는 가게 주인의 권한
- - Driver - 배달하는 분의 권한
+ - 🙍‍♂Client - 음식을 주문하는 유저의 권한
+ - 👨‍🍳Owner - 식당을 운영하는 가게 주인의 권한
+ - 🛵Driver - 배달하는 분의 권한
 
 ### 공통
  - 로그인/아웃
