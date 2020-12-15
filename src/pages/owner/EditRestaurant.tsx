@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useMyRestaurant } from '../../hooks/useMyRestaurant';
 
 interface IParams {
   id: string;
@@ -7,6 +8,7 @@ interface IParams {
 
 const EditRestaurant: React.FC = () => {
   const { id } = useParams<IParams>();
+  const { data, loading } = useMyRestaurant(+id);
   return (
     <></>
   )

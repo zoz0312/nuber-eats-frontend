@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import { gql, useMutation } from '@apollo/client';
 import { createRestaurant, createRestaurantVariables } from '../../__generated__/createRestaurant';
-import { useForm } from 'react-hook-form';
-import Button from '../../components/Button';
 import { Helmet } from 'react-helmet-async';
 import FormError from '../../components/FormError';
-import { BASE_HOST } from '../../apollo';
 import { useHistory } from 'react-router-dom';
 import { fileUploader } from '../../functions/imageUploader';
+import RestaurantForm, { IRestaurantFormProps } from '../../components/RestaurantForm';
 
 const CREATE_RESTAURANT_MUTATION = gql`
   mutation createRestaurant($input: CreateRestaurantInput!) {
@@ -18,16 +16,8 @@ const CREATE_RESTAURANT_MUTATION = gql`
   }
 `;
 
-interface IFormProps {
-  name: string;
-  address: string;
-  categoryName: string;
-  file: FileList;
-}
-
 const AddRestaurant: React.FC = () => {
   // const client = useApolloClient();
-
   const history = useHistory();
   const [uploading, setUploading] = useState(false);
   const onCompleted = (data: createRestaurant) => {
@@ -61,20 +51,15 @@ const AddRestaurant: React.FC = () => {
   });
   // refetchQueries: [{ query: MY_RESTAURANTS_QUERY }]
 
-  const {
-    register,
-    getValues,
-    formState,
-    handleSubmit
-  } = useForm<IFormProps>({
-    mode: 'onChange',
-  });
-
-  const onSubmit = async () => {
-    if (uploading) { return };
+  const onSubmit = async ({
+    file,
+    name,
+    categoryName,
+    address
+  }: IRestaurantFormProps) => {
     setUploading(true);
+
     try {
-      const { file, name, categoryName, address } = getValues();
       const coverImage = await fileUploader(file[0]);
       createRestaurantMutation({
         variables: {
@@ -98,51 +83,14 @@ const AddRestaurant: React.FC = () => {
       </Helmet>
       <div className="w-full mt-10 lg:mt-32 max-w-screen-sm flex flex-col items-center">
       <h4 className="w-full font-semibold text-center pl-5 text-2xl mb-6">Add Restaurant</h4>
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="grid gap-5 my-5 px-5 w-full"
+        <RestaurantForm
+          onSubmit={onSubmit}
+          loading={uploading}
         >
-          <input
-            ref={register({required: 'Name is required.'})}
-            className="input"
-            name="name"
-            placeholder="Name"
-            type="text"
-            required
-          />
-          <input
-            ref={register({required: 'Address is required.'})}
-            className="input"
-            name="address"
-            placeholder="Address"
-            type="text"
-            required
-          />
-          <input
-            ref={register({required: 'Category Name is required.'})}
-            className="input"
-            name="categoryName"
-            placeholder="Category Name"
-            type="text"
-            required
-          />
-          <div>
-            <input
-              type="file"
-              name="file"
-              accept="image/*"
-              ref={register({ required: true })}
-            />
-          </div>
-          <Button
-            loading={uploading}
-            canClick={formState.isValid}
-            actionText={'Create Restaurant'}
-          />
           { data?.createRestaurant.error && (
             <FormError errorMessage={data.createRestaurant.error} />
           )}
-        </form>
+        </RestaurantForm>
       </div>
     </div>
   );
