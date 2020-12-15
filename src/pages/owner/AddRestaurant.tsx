@@ -55,10 +55,9 @@ const AddRestaurant: React.FC = () => {
     file,
     name,
     categoryName,
-    address
+    address,
   }: IRestaurantFormProps) => {
     setUploading(true);
-
     try {
       const coverImage = await fileUploader(file[0]);
       createRestaurantMutation({
@@ -81,11 +80,12 @@ const AddRestaurant: React.FC = () => {
       <Helmet>
         <title>Add Restaurant | Nuber Eats</title>
       </Helmet>
-      <div className="w-full mt-10 lg:mt-32 max-w-screen-sm flex flex-col items-center">
+      <div className="w-full mt-10 lg:mt-32 max-w-screen-sm flex flex-col items-center mx-auto">
       <h4 className="w-full font-semibold text-center pl-5 text-2xl mb-6">Add Restaurant</h4>
         <RestaurantForm
           onSubmit={onSubmit}
           loading={uploading}
+          buttonText={`Create Restaurant`}
         >
           { data?.createRestaurant.error && (
             <FormError errorMessage={data.createRestaurant.error} />

@@ -9,15 +9,25 @@ export interface IRestaurantFormProps {
   file: FileList;
 };
 
+export interface IDefaultValueProps {
+  name?: string;
+  address?: string;
+  categoryName?: string;
+};
+
 interface IProps {
   onSubmit: (object: IRestaurantFormProps) => void;
   loading: boolean;
+  defaultValues?: IDefaultValueProps;
+  buttonText: string;
 }
 
 const RestaurantForm: React.FC<IProps> = ({
   onSubmit,
   loading,
-  children
+  defaultValues = {},
+  buttonText,
+  children,
 }) => {
   const {
     register,
@@ -26,6 +36,7 @@ const RestaurantForm: React.FC<IProps> = ({
     handleSubmit
   } = useForm<IRestaurantFormProps>({
     mode: 'onChange',
+    defaultValues,
   });
 
   const formSubmit = () => {
@@ -73,7 +84,7 @@ const RestaurantForm: React.FC<IProps> = ({
       <Button
         loading={loading}
         canClick={formState.isValid}
-        actionText={'Create Restaurant'}
+        actionText={buttonText}
       />
       { children }
     </form>

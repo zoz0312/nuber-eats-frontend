@@ -103,11 +103,15 @@ const MyRestaurant: React.FC = () => {
         </div>
         <div className="my-3">
           <Link
+            to={`/edit-restaurant/${id}`}
+            className="mr-5 text-white bg-gray-800 hover:bg-gray-700 transition-colors py-3 px-10"
+          >Edit Restaurant &rarr;</Link>
+          <Link
             to={`/restaurant/${id}/add-dish`}
-            className="mr-8 text-white bg-gray-800 hover:bg-gray-700 transition-colors py-3 px-10"
+            className="mr-5 text-white bg-gray-800 hover:bg-gray-700 transition-colors py-3 px-10"
           >Add Dish &rarr;</Link>
           { data?.myRestaurant.restaurant?.isPromoted ? (
-            <div className="inline-block text-lime-700">Is Already Promotted!</div>
+            <div className="inline-block text-lime-700 my-3">Is Already Promotted!</div>
           ) : (
             <button
               type="button"
