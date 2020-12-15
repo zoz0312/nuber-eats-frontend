@@ -68,7 +68,6 @@ const AddDish: React.FC = () => {
   const onSubmit = () => {
     if (loading) { return; }
     const { name, price, description, ...dishOption } = getValues();
-    console.log('dishOption', dishOption)
     const dishOptions = options.map(theId => {
       const optionChoice =
         choices

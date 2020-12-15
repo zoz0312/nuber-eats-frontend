@@ -59,7 +59,7 @@ const ClientSearch: React.FC = () => {
         ]);
       }
     }
-  }, [data, itemList, setTotalPages]);
+  }, [data]);
 
   return (
     <div>

@@ -3,7 +3,7 @@ import { ApolloProvider } from '@apollo/client';
 import CreateAccount, { CREATE_ACCOUNT_MUTATION } from '../CreateAccount';
 import { createMockClient, MockApolloClient } from 'mock-apollo-client';
 import { render, waitFor } from '../../test-utils';
-import { RenderResult } from '@testing-library/react';
+import { getByText, RenderResult } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { UserRole } from '../../__generated__/globalTypes';
 
@@ -39,9 +39,9 @@ describe('<CreateAccount />', () => {
   });
 
   it('renders validation error', async () => {
-    const { getByRole, getByPlaceholderText } = renderResult;
+    const { getByRole, getByPlaceholderText, getByText } = renderResult;
     const email = getByPlaceholderText(/email/i);
-    const button = getByRole('button');
+    const button = getByText(/create account/i);
     await waitFor(() => {
       userEvent.type(email, 'worng@email');
     });
@@ -64,10 +64,10 @@ describe('<CreateAccount />', () => {
       password: '123123',
       role: UserRole.Client,
     }
-    const { getByRole, getByPlaceholderText } = renderResult;
+    const { getByRole, getByPlaceholderText, getByText } = renderResult;
     const email = getByPlaceholderText(/email/i);
     const password = getByPlaceholderText(/password/i);
-    const button = getByRole('button');
+    const button = getByText(/create account/i);
     const mockedLoginMutationResponse = jest.fn().mockResolvedValue({
       data: {
         createAccount: {

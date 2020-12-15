@@ -58,7 +58,6 @@ const CreateAccount = () => {
   });
 
   const onSubmit = () => {
-    console.log('Submit')
     if (loading) {
       return;
     }
