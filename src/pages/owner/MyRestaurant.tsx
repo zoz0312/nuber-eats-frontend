@@ -175,7 +175,9 @@ const MyRestaurant: React.FC = () => {
           ) : (
             <div className="grid md:grid-cols-3 gap-x-7 gap-y-4">
             { data?.myRestaurant.restaurant?.menu.map((dish, index) => (
-              <Dish key={index} menu={dish} />
+              <Link to={`/restaurant/${id}/edit-dish/${dish.id}`}>
+                <Dish key={index} menu={dish} />
+              </Link>
             ))}
             </div>
           )}

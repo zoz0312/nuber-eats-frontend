@@ -8,6 +8,7 @@ import { DISH_FRAGMENT } from './../../fragments';
 import { findDish, findDishVariables } from './../../__generated__/findDish';
 import { Helmet } from 'react-helmet';
 import Article from '../../components/Article';
+import { fileUploader } from './../../functions/imageUploader';
 
 const EDIT_DISH_MUTATION = gql`
   mutation editDish($input: EditDishInput!) {
@@ -76,8 +77,31 @@ const EditDish: React.FC = () => {
     }: IDishFormArgument,
   ) => {
     if (loading) { return; }
-  }
 
+    let photo: string;
+    if (file[0]) {
+      photo = await fileUploader(file[0]);
+    } else {
+      if (data?.findDish.dish?.photo) {
+        photo = data?.findDish.dish?.photo;
+      } else {
+        photo = '';
+      }
+    }
+
+    editDishMutation({
+      variables: {
+        input: {
+          dishId: +dishId,
+          name,
+          price: +price,
+          description,
+          photo,
+          options: dishOptions,
+        }
+      }
+    })
+  };
 
   return (
     <div>

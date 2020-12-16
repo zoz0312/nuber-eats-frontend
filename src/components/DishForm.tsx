@@ -98,10 +98,6 @@ const DishForm: React.FC<IProps> = ({
   const formSubmit = async () => {
     if (loading) { return };
     const {
-      name,
-      price,
-      description,
-      file,
       ...dishOption
     } = getValues();
 
