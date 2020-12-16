@@ -10,14 +10,16 @@ export interface IDishFormProps {
   [key: string]: string;
 };
 
+export interface IDishFormChoices {
+  optionId: number;
+  id: number;
+};
+
 interface IProps {
   onSubmit: (
     object: IDishFormProps,
     options: number[],
-    choices: {
-      optionId: number,
-      id: number
-    }[]
+    choices: IDishFormChoices[],
   ) => void;
   loading: boolean;
   defaultValues?: IDishFormProps;
@@ -32,7 +34,7 @@ const DishForm: React.FC<IProps> = ({
   children,
 }) => {
   const [options, setOptions] = useState<number[]>([]);
-  const [choices, setChoices] = useState<{optionId: number, id: number}[]>([]);
+  const [choices, setChoices] = useState<IDishFormChoices[]>([]);
 
   const {
     register,
@@ -55,7 +57,7 @@ const DishForm: React.FC<IProps> = ({
   };
 
   const onAddChoiceClick = (optionId: number) => {
-    setChoices(current => [...current, { optionId, id: Date.now() } ]);
+    setChoices(current => [...current, { optionId, id: Date.now() }]);
   }
   const onDeleteOptionClick = (idToDelete: number) => {
     setOptions(current => current.filter(id => id !== idToDelete));

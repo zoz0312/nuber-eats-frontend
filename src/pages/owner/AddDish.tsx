@@ -8,7 +8,7 @@ import { useForm } from 'react-hook-form';
 import Button from './../../components/Button';
 import { fileUploader } from './../../functions/imageUploader';
 import { MY_RESTAURANT_QUERY } from './../../hooks/useMyRestaurant';
-import DishForm, { IDishFormProps } from './../../components/DishForm';
+import DishForm, { IDishFormChoices, IDishFormProps } from './../../components/DishForm';
 
 const CREATE_DISH_MUTATION = gql`
   mutation createDish($input: CreateDishInput!) {
@@ -67,10 +67,7 @@ const AddDish: React.FC = () => {
       ...dishOption
     }: IDishFormProps,
     options: number[],
-    choices: {
-      optionId: number,
-      id: number
-    }[],
+    choices: IDishFormChoices[],
   ) => {
     if (loading) { return; }
     const dishOptions = options.map(theId => {
