@@ -10,6 +10,21 @@ export interface IDishFormProps {
   [key: string]: string;
 };
 
+export interface IDishFormArgument {
+  name: string;
+  price: string;
+  description: string;
+  file: any;
+  dishOptions: {
+    name: string;
+    extra: number;
+    choices: {
+        name: string;
+        extra: number;
+    }[];
+  }[]
+}
+
 export interface IDishFormChoices {
   optionId: number;
   id: number;
@@ -17,9 +32,7 @@ export interface IDishFormChoices {
 
 interface IProps {
   onSubmit: (
-    object: IDishFormProps,
-    options: number[],
-    choices: IDishFormChoices[],
+    object: IDishFormArgument,
   ) => void;
   loading: boolean;
   defaultValues?: IDishFormProps;
@@ -47,10 +60,36 @@ const DishForm: React.FC<IProps> = ({
     defaultValues,
   });
 
-  const formSubmit = () => {
+  const formSubmit = async () => {
     if (loading) { return };
-    onSubmit(getValues(), options, choices);
-  }
+    const {
+      name,
+      price,
+      description,
+      file,
+      ...dishOption
+    } = getValues();
+
+    const dishOptions = options.map(theId => {
+      const optionChoice =
+        choices
+          .filter(choice => choice.optionId === theId)
+          .map(choice => ({
+            name: dishOption[`choiceName-${theId}-${choice.id}`],
+            extra: +dishOption[`choiceExtra-${theId}-${choice.id}`],
+          }));
+      return {
+        name: dishOption[`optionName-${theId}`],
+        extra: +dishOption[`optionExtra-${theId}`],
+        choices: optionChoice,
+      }
+    });
+
+    onSubmit({
+      ...getValues(),
+      dishOptions
+    });
+  };
 
   const onAddOptionClick = () => {
     setOptions(current => [...current, Date.now()]);
@@ -58,7 +97,8 @@ const DishForm: React.FC<IProps> = ({
 
   const onAddChoiceClick = (optionId: number) => {
     setChoices(current => [...current, { optionId, id: Date.now() }]);
-  }
+  };
+
   const onDeleteOptionClick = (idToDelete: number) => {
     setOptions(current => current.filter(id => id !== idToDelete));
 
@@ -73,7 +113,7 @@ const DishForm: React.FC<IProps> = ({
 
     setValue(`choiceName-${optionId}-${choiceId}`, '');
     setValue(`choiceExtra-${optionId}-${choiceId}`, '0');
-  }
+  };
 
   return (
     <form
