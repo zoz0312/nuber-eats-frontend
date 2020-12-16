@@ -10,10 +10,21 @@ import { createPayment, createPaymentVariables } from './../../__generated__/cre
 import { pendingOrders } from './../../__generated__/pendingOrders';
 import { useMyRestaurant } from '../../hooks/useMyRestaurant';
 import { MY_RESTAURANT_QUERY } from './../../hooks/useMyRestaurant';
+import { deleteRestaurant, deleteRestaurantVariables } from './../../__generated__/deleteRestaurant';
+import { NotFound } from './../404';
 
 const CREATE_PAYMENT_MUTATION = gql`
   mutation createPayment($input: CreatePaymentInput!) {
     createPayment(input: $input) {
+      ok
+      error
+    }
+  }
+`;
+
+const DELETE_RESTAURANT_MUTATION = gql`
+  mutation deleteRestaurant($input: DeleteRestaurantInput!) {
+    deleteRestaurant(input: $input) {
       ok
       error
     }
@@ -43,7 +54,7 @@ const MyRestaurant: React.FC = () => {
     }
   }
 
-  const [createPaymentMutation,] = useMutation<
+  const [createPaymentMutation] = useMutation<
     createPayment,
     createPaymentVariables
   >(CREATE_PAYMENT_MUTATION, {
@@ -56,6 +67,19 @@ const MyRestaurant: React.FC = () => {
         }
       }
     }]
+  });
+
+  const [deleteRestaurantMutation] = useMutation<
+    deleteRestaurant,
+    deleteRestaurantVariables
+  >(DELETE_RESTAURANT_MUTATION, {
+    onCompleted: (data: deleteRestaurant) => {
+      const { deleteRestaurant: { ok } } = data;
+      if (ok) {
+        alert('정상적으로 삭제되었습니다.');
+        history.push('/');
+      }
+    }
   });
 
   const triggerPaddle = async () => {
@@ -74,6 +98,18 @@ const MyRestaurant: React.FC = () => {
     });
   };
 
+  const deleteRestaurant = () => {
+    if (window.confirm('정말로 식당을 삭제하시겠습니까?')) {
+      deleteRestaurantMutation({
+        variables: {
+          input: {
+            restaurantId: +id,
+          }
+        }
+      })
+    }
+  }
+
   const { data:subscriptionData } = useSubscription<pendingOrders>(PENDING_ORDERS_SUBSCRIPTION);
   const history = useHistory();
 
@@ -81,8 +117,11 @@ const MyRestaurant: React.FC = () => {
     if (subscriptionData?.pendingOrders.id) {
       history.push(`/orders/${subscriptionData?.pendingOrders.id}`)
     }
-  }, [subscriptionData, history])
+  }, [subscriptionData, history]);
 
+  if (!loading && !data?.myRestaurant.ok) {
+    return <NotFound />
+  }
   return (
     <div>
       <Helmet>
@@ -101,15 +140,23 @@ const MyRestaurant: React.FC = () => {
         <div className="text-4xl font-medium mb-10">
           {data?.myRestaurant.restaurant?.name}
         </div>
-        <div className="my-3">
-          <Link
-            to={`/edit-restaurant/${id}`}
-            className="mr-5 text-white bg-gray-800 hover:bg-gray-700 transition-colors py-3 px-10"
-          >Edit Restaurant &rarr;</Link>
-          <Link
-            to={`/restaurant/${id}/add-dish`}
-            className="mr-5 text-white bg-gray-800 hover:bg-gray-700 transition-colors py-3 px-10"
-          >Add Dish &rarr;</Link>
+        <div className="my-3 flex items-center">
+          <button
+            type="button"
+            className="btn-black mr-5"
+          >
+            <Link
+              to={`/edit-restaurant/${id}`}
+            >Edit Restaurant &rarr;</Link>
+          </button>
+          <button
+            type="button"
+            className="btn-black mr-5"
+          >
+            <Link
+              to={`/restaurant/${id}/add-dish`}
+            >Add Dish &rarr;</Link>
+          </button>
           { data?.myRestaurant.restaurant?.isPromoted ? (
             <div className="inline-block text-lime-700 my-3">Is Already Promotted!</div>
           ) : (
@@ -124,18 +171,20 @@ const MyRestaurant: React.FC = () => {
         </div>
         <div className="mt-10">
           {data?.myRestaurant.restaurant?.menu.length === 0 ? (
-            <div className="text-xl mb-5">You have no dishies</div>
+            <div className="text-xl mb-5 text-lime-600">메뉴가 없습니다.</div>
           ) : (
             <div className="grid md:grid-cols-3 gap-x-7 gap-y-4">
             { data?.myRestaurant.restaurant?.menu.map((dish, index) => (
-              <Dish key={index} menu={dish} />
+              <Link to={`/restaurant/${id}/edit-dish/${dish.id}`}>
+                <Dish key={index} menu={dish} />
+              </Link>
             ))}
             </div>
           )}
         </div>
         <div className="mt-20">
           <h4 className="text-center text-xl font-medium">Sales</h4>
-          <div className="pb-20">
+          <div className="pb-10">
             <VictoryChart
               width={window.innerWidth}
               height={500}
@@ -183,6 +232,15 @@ const MyRestaurant: React.FC = () => {
               />
             </VictoryChart>
           </div>
+        </div>
+        <div className="my-5 flex justify-start">
+          <button
+            onClick={deleteRestaurant}
+            type="button"
+            className="underline text-white bg-red-400 hover:bg-red-500 w-4/12 text-center py-2 transition-colors focus:outline-none"
+          >
+            식당 삭제하기
+          </button>
         </div>
       </Article>
     </div>

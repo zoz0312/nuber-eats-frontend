@@ -41,7 +41,7 @@ const Dish: React.FC<IDishProps> = ({
 
   return (
     <div
-      className={`flex flex-row justify-between border-2 transition-colors cursor-pointer ${
+      className={`h-full flex flex-row justify-between border-2 transition-colors cursor-pointer ${
         isSelected ?
         'border-lime-600 hover:border-lime-700 ' :
         'border-gray-300 hover:border-gray-500 '
