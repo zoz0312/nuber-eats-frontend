@@ -17,6 +17,7 @@ import AddDish from '../pages/owner/AddDish';
 import Order from '../pages/Order';
 import DashBoard from '../pages/driver/DashBoard';
 import EditRestaurant from '../pages/owner/EditRestaurant';
+import EditDish from '../pages/owner/EditDish';
 
 const commonRoutes = [
   { path: '/confirm', component: ConfirmEmail },
@@ -32,9 +33,10 @@ const clientRoutes = [
 const restaurantRoutes = [
   { path: '/', component: MyRestaurants },
   { path: '/add-restaurant', component: AddRestaurant },
+  { path: '/edit-restaurant/:id/', component: EditRestaurant },
   { path: '/restaurant/:id', component: MyRestaurant },
   { path: '/restaurant/:id/add-dish', component: AddDish },
-  { path: '/edit-restaurant/:id/', component: EditRestaurant },
+  { path: '/restaurant/:id/edit-dish/:dishId', component: EditDish },
 ];
 const driverRoutes = [
   { path: '/', component: DashBoard },

@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Button from './Button';
+import { findDish_findDish_dish } from './../__generated__/findDish';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface IDishFormProps {
   name: string;
@@ -26,8 +28,8 @@ export interface IDishFormArgument {
 }
 
 export interface IDishFormChoices {
-  optionId: number;
-  id: number;
+  optionId: string;
+  id: string;
 };
 
 interface IProps {
@@ -35,7 +37,7 @@ interface IProps {
     object: IDishFormArgument,
   ) => void;
   loading: boolean;
-  defaultValues?: IDishFormProps;
+  defaultValues?: findDish_findDish_dish;
   buttonText: string;
 }
 
@@ -46,7 +48,7 @@ const DishForm: React.FC<IProps> = ({
   buttonText,
   children,
 }) => {
-  const [options, setOptions] = useState<number[]>([]);
+  const [options, setOptions] = useState<string[]>([]);
   const [choices, setChoices] = useState<IDishFormChoices[]>([]);
 
   const {
@@ -57,8 +59,41 @@ const DishForm: React.FC<IProps> = ({
     setValue,
   } = useForm<IDishFormProps>({
     mode: 'onChange',
-    defaultValues,
+    defaultValues: {
+      name: defaultValues?.name,
+      price: defaultValues?.price.toString(),
+      description: defaultValues?.description
+    }
   });
+
+  useEffect(() => {
+    if (defaultValues) {
+      if (defaultValues.options && options.length === 0) {
+        defaultValues.options.map(async (item) => {
+          const optionUuid = uuidv4();
+          await setOptions(current => [
+            ...current,
+            optionUuid,
+          ]);
+
+          setValue(`optionName-${optionUuid}`, `${item.name}`, { shouldValidate: true });
+          setValue(`optionExtra-${optionUuid}`, `${item.extra}`, { shouldValidate: true });
+
+          if (item.choices && item.choices.length !== 0) {
+            item.choices.map(async (chioce) => {
+              const choiceUuid = uuidv4();
+              await setChoices(current => [
+                ...current,
+                { optionId: optionUuid, id: choiceUuid },
+              ]);
+              setValue(`choiceName-${optionUuid}-${choiceUuid}`, `${chioce.name}`, { shouldValidate: true });
+              setValue(`choiceExtra-${optionUuid}-${choiceUuid}`, `${chioce.extra}`, { shouldValidate: true });
+            });
+          }
+        });
+      }
+    }
+  }, []);
 
   const formSubmit = async () => {
     if (loading) { return };
@@ -92,21 +127,21 @@ const DishForm: React.FC<IProps> = ({
   };
 
   const onAddOptionClick = () => {
-    setOptions(current => [...current, Date.now()]);
+    setOptions(current => [...current, uuidv4()]);
   };
 
-  const onAddChoiceClick = (optionId: number) => {
-    setChoices(current => [...current, { optionId, id: Date.now() }]);
+  const onAddChoiceClick = (optionId: string) => {
+    setChoices(current => [...current, { optionId, id: uuidv4() }]);
   };
 
-  const onDeleteOptionClick = (idToDelete: number) => {
+  const onDeleteOptionClick = (idToDelete: string) => {
     setOptions(current => current.filter(id => id !== idToDelete));
 
     setValue(`optionName-${idToDelete}`, '');
     setValue(`optionExtra-${idToDelete}`, '0');
   };
 
-  const onDeleteChoiceClick = (optionId: number, choiceId: number) => {
+  const onDeleteChoiceClick = (optionId: string, choiceId: string) => {
     setChoices(current => current.filter(choice => {
       return choice.id !== choiceId
     }));
@@ -195,7 +230,7 @@ const DishForm: React.FC<IProps> = ({
                 >X</button>
               </div>
             </div>
-              {choices.length !== 0 &&(
+              {choices.length !== 0 && (
                 choices.filter(chioce => chioce.optionId === id).map(choiceId => (
                   <div
                     key={choiceId.id}
