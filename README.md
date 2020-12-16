@@ -78,6 +78,7 @@ https://sharp-dubinsky-7a4b59.netlify.app/
  - [ ] 주문자 위치 (경도, 위도)
 
 ### Owner
+ - [ ] 사진 미리보기 (식당, 음식)
  - [X] <del>나의 식당 수정</del>
  - [X] <del>나의 식당 삭제</del>
  - [X] <del>나의 식당 음식 수정</del>
