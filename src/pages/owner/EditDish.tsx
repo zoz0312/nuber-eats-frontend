@@ -154,7 +154,7 @@ const EditDish: React.FC = () => {
   return (
     <div>
       <Helmet>
-        {`Edit Dish | Nuber Eats`}
+        <title>{`Edit Dish | Nuber Eats`}</title>
       </Helmet>
       <Article loading={loading}>
         <h4 className="w-full font-semibold text-center pl-5 text-2xl mb-6">Edit Dish</h4>
@@ -163,7 +163,7 @@ const EditDish: React.FC = () => {
             <DishForm
               onSubmit={onSubmit}
               loading={mutationLoading}
-              buttonText={`Edit Dish`}
+              buttonText={`메뉴 수정`}
               defaultValues={data?.findDish.dish}
             ></DishForm>
             <div className="max-w-screen-sm mx-auto px-5 mb-10">

@@ -73,14 +73,14 @@ const AddDish: React.FC = () => {
   return (
     <div>
       <Helmet>
-        {`Create Dish | Nuber Eats`}
+        <title>{`Add Dish | Nuber Eats`}</title>
       </Helmet>
       <Article loading={loading}>
         <h4 className="w-full font-semibold text-center pl-5 text-2xl mb-6">Add Dish</h4>
         <DishForm
           onSubmit={onSubmit}
           loading={loading}
-          buttonText={`Add Dish`}
+          buttonText={`메뉴 추가`}
         ></DishForm>
       </Article>
     </div>

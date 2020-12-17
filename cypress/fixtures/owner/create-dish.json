@@ -1,0 +1,9 @@
+{
+  "data": {
+    "createDish": {
+      "ok": true,
+      "error": null,
+      "__typename": "CreateDishOutput"
+    }
+  }
+}
