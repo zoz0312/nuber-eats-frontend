@@ -38,6 +38,12 @@ https://sharp-dubinsky-7a4b59.netlify.app/
  - 👨‍🍳Owner - 식당을 운영하는 가게 주인의 권한
  - 🛵Driver - 배달하는 분의 권한
 
+### 미리보기
+1. 주문 (subscription)
+![order](https://user-images.githubusercontent.com/26385380/102536867-8b188980-40ed-11eb-8b8e-ab8ddfdaf92c.gif)
+(권한 : 식당 | 주문자 | 배달)
+
+
 ### 공통
  - 로그인/아웃
  - 유저 생성
