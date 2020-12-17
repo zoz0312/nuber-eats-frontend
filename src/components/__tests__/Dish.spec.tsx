@@ -13,9 +13,9 @@ describe('<Dish />', () => {
       photo: 'test',
       description: 'test',
       options: [
-        { name: 'testOption' },
-        { name: 'testOption2' },
-        { name: 'testOption3' },
+        { __typename: "DishOption", name: 'testOption', extran: null, choices: null, },
+        { __typename: "DishOption", name: 'testOption2', extran: null, choices: null, },
+        { __typename: "DishOption", name: 'testOption3', extran: null, choices: null, },
       ]
     };
 

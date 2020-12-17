@@ -60,7 +60,6 @@ const CreateAccount = () => {
   });
 
   const onSubmit = () => {
-    console.log('onSubmit');
     if (loading) {
       return;
     }
