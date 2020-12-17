@@ -32,7 +32,7 @@ Cypress.Commands.add('assertLoggedOut', () => {
   cy.window().its('localStorage.nuber-token').should('be.undefined');
 });
 
-Cypress.Commands.add('login', (role = 'client', email = 'aju.an@gmail.com', password = '121212') => {
+Cypress.Commands.add('login', (role = 'client', email = 'aju.an@gmail.com', password = '121212121212') => {
   // @ts-ignore
   cy.assertLoggedOut();
   cy.visit('/');

@@ -24,6 +24,6 @@ describe('Edit Profile', () => {
       }
     });
     cy.findByPlaceholderText(/email/i).clear().type('newEmail@gmail.com');
-    cy.findByRole('button').click();
+    cy.findAllByText(/update profile/i).click();
   })
 })

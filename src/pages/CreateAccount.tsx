@@ -153,7 +153,7 @@ const CreateAccount = () => {
           <Button
             canClick={formState.isValid}
             loading={loading}
-            actionText={'Create Account'}
+            actionText={'유저 생성하기'}
           />
           { createAccountMutationResult?.createAccount.error && (
             <FormError errorMessage={createAccountMutationResult?.createAccount.error} />

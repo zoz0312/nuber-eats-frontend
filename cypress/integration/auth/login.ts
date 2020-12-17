@@ -21,6 +21,6 @@ describe('Login', () => {
 
   it('can fill out the form login', () => {
     // @ts-ignore
-    cy.login('aju.an@gmail.com', '121212')
+    cy.login('client', 'aju.an@gmail.com', '121212121212')
   });
 });
