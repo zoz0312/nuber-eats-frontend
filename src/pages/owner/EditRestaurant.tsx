@@ -95,7 +95,7 @@ const EditRestaurant: React.FC = () => {
               address: myRestaurantData?.myRestaurant.restaurant?.address,
               categoryName: myRestaurantData?.myRestaurant.restaurant?.category?.name,
             }}
-            buttonText={`Edit Restaurant`}
+            buttonText={`식당 수정하기`}
           >
           </RestaurantForm>
         )}

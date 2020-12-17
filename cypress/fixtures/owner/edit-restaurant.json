@@ -1,0 +1,9 @@
+{
+  "data": {
+    "editRestaurant": {
+      "ok": true,
+      "error": null,
+      "__typename": "EditRestaurantOutput"
+    }
+  }
+}

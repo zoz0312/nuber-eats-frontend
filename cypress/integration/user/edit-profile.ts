@@ -3,7 +3,7 @@ import { HOST } from './../../support/constants';
 describe('Edit Profile', () => {
   beforeEach(() => {
     // @ts-ignore
-    cy.login();
+    cy.login('client');
     cy.get('a[href="/edit-profile"]').click();
     cy.wait(2000);
   });
