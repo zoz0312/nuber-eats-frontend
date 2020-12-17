@@ -37,7 +37,6 @@ const AddRestaurant: React.FC = () => {
       //       restaurants: [1,2,3,4,5,6]
       //     }
       //   })
-      //   console.log('queryResult', queryResult);
       // }, []);
       history.push('/');
     }
@@ -85,7 +84,7 @@ const AddRestaurant: React.FC = () => {
         <RestaurantForm
           onSubmit={onSubmit}
           loading={uploading}
-          buttonText={`Create Restaurant`}
+          buttonText={`식당 생성하기`}
         >
           { data?.createRestaurant.error && (
             <FormError errorMessage={data.createRestaurant.error} />

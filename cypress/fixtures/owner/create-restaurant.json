@@ -1,0 +1,9 @@
+{
+  "data": {
+    "createRestaurant": {
+      "ok": true,
+      "error": null,
+      "__typename": "CreateRestaurantOutput"
+    }
+  }
+}

@@ -3,7 +3,7 @@ import { HOST } from './../../support/constants';
 describe('Edit Profile', () => {
   beforeEach(() => {
     // @ts-ignore
-    cy.login();
+    cy.login('client');
     cy.get('a[href="/edit-profile"]').click();
     cy.wait(2000);
   });
@@ -24,6 +24,6 @@ describe('Edit Profile', () => {
       }
     });
     cy.findByPlaceholderText(/email/i).clear().type('newEmail@gmail.com');
-    cy.findByRole('button').click();
+    cy.findAllByText(/update profile/i).click();
   })
 })

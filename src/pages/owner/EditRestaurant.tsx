@@ -80,7 +80,7 @@ const EditRestaurant: React.FC = () => {
   return (
     <div>
       <Helmet>
-        <title>Edit Restaurants | Nuber Eats</title>
+        <title>Edit Restaurant | Nuber Eats</title>
       </Helmet>
       <div className="w-full mt-10 lg:mt-32 max-w-screen-sm flex flex-col items-center mx-auto">
         <h4 className="w-full font-semibold text-center pl-5 text-2xl mb-6">Edit Restaurant</h4>
@@ -95,7 +95,7 @@ const EditRestaurant: React.FC = () => {
               address: myRestaurantData?.myRestaurant.restaurant?.address,
               categoryName: myRestaurantData?.myRestaurant.restaurant?.category?.name,
             }}
-            buttonText={`Edit Restaurant`}
+            buttonText={`식당 수정하기`}
           >
           </RestaurantForm>
         )}
