@@ -1,0 +1,9 @@
+{
+  "data": {
+    "deleteRestaurant": {
+      "ok": true,
+      "error": null,
+      "__typename": "DeleteRestaurantOutput"
+    }
+  }
+}

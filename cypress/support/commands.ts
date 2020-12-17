@@ -56,5 +56,3 @@ Cypress.Commands.add('login', (role = 'client', email = 'aju.an@gmail.com', pass
 Cypress.Commands.add('assertTitle', title => {
   cy.title().should('eq', title);
 })
-
-

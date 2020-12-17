@@ -1,4 +1,4 @@
-import { HOST, inputName } from './../../support/constants';
+import { HOST, inputName, postQuery } from './../../support/constants';
 
 describe('Edit Restaurant', () => {
   beforeEach(() => {
@@ -13,17 +13,9 @@ describe('Edit Restaurant', () => {
   });
 
   it('edit Restaurant', () => {
-    cy.intercept('POST', HOST, (req) => {
-      const { operationName } = req.body;
-      if (operationName) {
-        if (operationName === 'editRestaurant') {
-          req.reply((res) => {
-            res.send({
-              fixture: 'owner/edit-restaurant.json'
-            })
-          })
-        }
-      }
+    postQuery({
+      queryName: 'editRestaurant',
+      fixture: 'owner/edit-restaurant.json',
     });
 
     cy.findAllByText('새로운식당').click();
