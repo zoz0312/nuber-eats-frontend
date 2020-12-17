@@ -85,7 +85,7 @@ const AddRestaurant: React.FC = () => {
         <RestaurantForm
           onSubmit={onSubmit}
           loading={uploading}
-          buttonText={`Create Restaurant`}
+          buttonText={`식당 생성하기`}
         >
           { data?.createRestaurant.error && (
             <FormError errorMessage={data.createRestaurant.error} />

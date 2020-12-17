@@ -32,14 +32,22 @@ Cypress.Commands.add('assertLoggedOut', () => {
   cy.window().its('localStorage.nuber-token').should('be.undefined');
 });
 
-Cypress.Commands.add('login', (email = 'aju.an@gmail.com', password = '121212') => {
+Cypress.Commands.add('login', (role = 'client', email = 'aju.an@gmail.com', password = '121212') => {
   // @ts-ignore
   cy.assertLoggedOut();
   cy.visit('/');
   // @ts-ignore
   cy.assertTitle('Login | Nuber Eats');
-  cy.findAllByPlaceholderText(/email/i).type(email);
-  cy.findAllByPlaceholderText(/password/i).type(password);
+  if (role === 'client') {
+    cy.findAllByPlaceholderText(/email/i).type(email);
+    cy.findAllByPlaceholderText(/password/i).type(password);
+  } else if (role === 'owner') {
+    cy.findAllByPlaceholderText(/email/i).type('restaurant@rest.com');
+    cy.findAllByPlaceholderText(/password/i).type('a123123123');
+  } else if (role === 'delivery') {
+    cy.findAllByPlaceholderText(/email/i).type('delivery@delivery.com');
+    cy.findAllByPlaceholderText(/password/i).type('a123123123');
+  }
   cy.findByRole('button').should('not.have.class', 'pointer-events-none').click();
   // @ts-ignore
   cy.assertLoggedIn();
