@@ -55,9 +55,16 @@ const MyRestaurants: React.FC = () => {
       </Helmet>
       <Article loading={loading}>
         <h2 className="text-4xl mb-10">My Restaurants</h2>
-        <Link className="link" to="/add-restaurant">
-          Create One &rarr;
-        </Link>
+        <button className="btn mr-5">
+          <Link className="text-white" to="/edit-category">
+            Edit Category
+          </Link>
+        </button>
+        <button className="btn">
+          <Link className="text-white" to="/add-restaurant">
+            Create Restaurant
+          </Link>
+        </button>
         { itemList.length === 0 ? (
           <>
             <h4 className="text-xl mb-5">나의 가게가 없습니다!</h4>

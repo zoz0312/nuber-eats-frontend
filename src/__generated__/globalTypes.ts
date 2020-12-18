@@ -86,6 +86,12 @@ export interface DishOptionInputType {
   extra?: number | null;
 }
 
+export interface EditCategoryInput {
+  name?: string | null;
+  coverImage?: string | null;
+  categoryId: number;
+}
+
 export interface EditDishInput {
   name?: string | null;
   price?: number | null;
