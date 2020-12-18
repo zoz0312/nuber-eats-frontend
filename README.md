@@ -91,6 +91,7 @@ https://sharp-dubinsky-7a4b59.netlify.app/
  - [X] <del>나의 식당 삭제</del>
  - [X] <del>나의 식당 음식 수정</del>
  - [X] <del>나의 식당 음식 삭제</del>
+ - [X] <del>카테고리 수정</del>
  - [ ] 나의 주문 전체 목록
  - [ ] 나의 주문 상세 목록
 
